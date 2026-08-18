@@ -20,6 +20,7 @@ export interface Project {
   id: string
   title: string
   slug: string
+  category: string
   description: string
   long_description: string
   tech_stack: string[]
@@ -27,10 +28,19 @@ export interface Project {
   live_url: string
   cover_image: string; // Updated from image_url
   featured: boolean
+  project_type: 'company' | 'client' | 'personal'
   status: 'completed' | 'in-progress' | 'planned'
   order_index: number
   created_at: string
   updated_at: string
+  // SEO Fields
+  meta_title?: string;
+  meta_description?: string;
+  og_title?: string;
+  og_description?: string;
+  og_image?: string;
+  canonical_url?: string;
+  schema_data?: any;
 }
 
 export interface Blog {
@@ -46,6 +56,14 @@ export interface Blog {
   views: number
   created_at: string
   updated_at: string
+  // SEO Fields
+  meta_title?: string;
+  meta_description?: string;
+  og_title?: string;
+  og_description?: string;
+  og_image?: string;
+  canonical_url?: string;
+  schema_data?: any;
 }
 
 export interface Skill {
@@ -77,4 +95,25 @@ export interface ContactMessage {
   message: string;
   read: boolean;
   created_at: string;
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  type: 'blog' | 'project';
+  created_at: string;
+}
+
+export interface PageMeta {
+  id: string;
+  page_slug: string;
+  meta_title?: string;
+  meta_description?: string;
+  og_title?: string;
+  og_description?: string;
+  og_image?: string;
+  canonical_url?: string;
+  schema_data?: any;
+  updated_at: string;
 }

@@ -1,22 +1,22 @@
 "use client";
 import { Skill } from "@/lib/types";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 
 interface Props { skills: Skill[] }
 
 const categoryColors: Record<string, string> = {
-  Frontend: "#569cd6",
-  Backend: "#c586c0",
-  Tools: "#ce9178",
-  Database: "#4ec9b0",
-  DevOps: "#dcdcaa",
-  Languages: "#c586c0",
-  "Generative AI & LLM Engineering": "#4ec9b0",
-  "AI · ML · Data Science": "#f44747",
-  "Backend & APIs": "#569cd6",
+  Frontend: "#d3dad9",
+  Backend: "#715a5a",
+  Tools: "#d3dad9",
+  Database: "#715a5a",
+  DevOps: "#d3dad9",
+  Languages: "#715a5a",
+  "Generative AI & LLM Engineering": "#d3dad9",
+  "AI · ML · Data Science": "#715a5a",
+  "Backend & APIs": "#d3dad9",
 };
 
-const colors = ["#569cd6", "#4ec9b0", "#c586c0", "#ce9178", "#dcdcaa", "#f44747"];
+const colors = ["#d3dad9", "#715a5a"];
 
 export default function SkillsClient({ skills }: Props) {
   const [animated, setAnimated] = useState(false);
@@ -27,7 +27,20 @@ export default function SkillsClient({ skills }: Props) {
     return () => clearTimeout(timer);
   }, []);
 
-  const categories = Array.from(new Set(skills.map(s => s.category)));
+  const categories = useMemo(() => {
+    const order = ["Frontend", "Backend", "Database", "Tools"];
+    const cats = Array.from(new Set(skills.map(s => s.category)));
+    
+    return cats.sort((a, b) => {
+      const idxA = order.indexOf(a);
+      const idxB = order.indexOf(b);
+      
+      if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+      if (idxA !== -1) return -1;
+      if (idxB !== -1) return 1;
+      return a.localeCompare(b);
+    });
+  }, [skills]);
 
   return (
     <div ref={ref} className="px-6 py-12 md:px-12 max-w-[95%] mx-auto animate-in fade-in duration-800">
@@ -37,7 +50,7 @@ export default function SkillsClient({ skills }: Props) {
       </div>
 
       {/* Main Title */}
-      <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-[var(--vsc-text-bright)] mb-5 font-syne tracking-tighter">
+      <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-[var(--vsc-text-bright)] mb-5 tracking-tighter">
         Skills
       </h1>
 
@@ -53,7 +66,7 @@ export default function SkillsClient({ skills }: Props) {
           
           return (
             <div key={category} className="space-y-8">
-              <h2 className="text-sm font-bold uppercase tracking-[0.2em] font-syne" style={{ color }}>
+              <h2 className="text-sm font-bold uppercase tracking-[0.2em]" style={{ color }}>
                 {category}
               </h2>
 
@@ -87,7 +100,7 @@ export default function SkillsClient({ skills }: Props) {
       </div>
 
       {skills.length === 0 && (
-        <div className="text-center py-24 text-[var(--vsc-text-dim)] font-mono text-sm opacity-60">
+        <div className="text-left py-24 text-[var(--vsc-text-dim)] font-mono text-sm opacity-60">
           // No skills found. Add some from the dashboard.
         </div>
       )}

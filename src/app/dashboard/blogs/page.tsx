@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import toast from "react-hot-toast";
-import { PlusIcon, PencilIcon, TrashIcon, PhotoIcon, ArrowUpTrayIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { Blog } from "@/lib/types";
+import { PlusIcon, PencilIcon, TrashIcon, PhotoIcon, ArrowUpTrayIcon, XMarkIcon, ChevronDownIcon, ChevronUpIcon, GlobeAltIcon } from "@heroicons/react/24/outline";
+import { Blog, Category } from "@/lib/types";
 import { uploadImage } from "@/lib/supabase/storage";
 import dynamic from "next/dynamic";
 import slugify from "slug";
@@ -18,8 +18,16 @@ const empty: Partial<Blog> = {
   category: "Technical", 
   tags: [], 
   published: false, 
-  cover_image: "" 
+  cover_image: "",
+  meta_title: "",
+  meta_description: "",
+  og_title: "",
+  og_description: "",
+  canonical_url: "",
+  schema_data: null
 };
+
+type SortOption = "title-asc" | "title-desc" | "date-newest" | "date-oldest" | "updated" | "published";
 
 export default function BlogsDashboard() {
   const [blogs, setBlogs] = useState<Blog[]>([]);
@@ -28,6 +36,9 @@ export default function BlogsDashboard() {
   const [editing, setEditing] = useState<Partial<Blog>>(empty);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [showSEO, setShowSEO] = useState(false);
+  const [sortBy, setSortBy] = useState<SortOption>("date-newest");
   const thumbInputRef = useRef<HTMLInputElement>(null);
 
   const load = async () => { 
@@ -35,8 +46,11 @@ export default function BlogsDashboard() {
       const r = await fetch("/api/blogs"); 
       const data = await r.json();
       setBlogs(data); 
+
+      const catRes = await fetch("/api/categories?type=blog");
+      setCategories(await catRes.json());
     } catch (e) {
-      toast.error("Failed to load blogs");
+      toast.error("Failed to load data");
     } finally {
       setLoading(false); 
     }
@@ -44,8 +58,8 @@ export default function BlogsDashboard() {
   
   useEffect(() => { load(); }, []);
 
-  const openNew = () => { setEditing(empty); setModal(true); };
-  const openEdit = (b: Blog) => { setEditing(b); setModal(true); };
+  const openNew = () => { setEditing(empty); setModal(true); setShowSEO(false); };
+  const openEdit = (b: Blog) => { setEditing(b); setModal(true); setShowSEO(false); };
   const closeModal = () => { setModal(false); setEditing(empty); };
 
   const handleThumbUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,34 +90,70 @@ export default function BlogsDashboard() {
     } finally { setSaving(false); }
   };
 
-  const deleteBlog = async (id: string) => {
-    if (!confirm("Delete this article?")) return;
-    await fetch("/api/blogs", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) });
-    load();
-  };
+   const deleteBlog = async (id: string) => {
+     if (!confirm("Delete this article?")) return;
+     await fetch("/api/blogs", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) });
+     load();
+   };
 
-  const inputClass = "w-full bg-[#1e1e1e] border border-[#3c3c3c] rounded-md px-4 py-2.5 text-[#d4d4d4] text-sm outline-none focus:border-[#007acc] transition-colors placeholder:opacity-30";
-  const labelClass = "block text-[11px] text-[#858585] font-mono mb-2 uppercase tracking-wider";
+   const getSortedBlogs = (items: Blog[]): Blog[] => {
+     const sorted = [...items];
+     switch (sortBy) {
+       case "title-asc":
+         return sorted.sort((a, b) => a.title.localeCompare(b.title));
+       case "title-desc":
+         return sorted.sort((a, b) => b.title.localeCompare(a.title));
+       case "date-newest":
+         return sorted.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+       case "date-oldest":
+         return sorted.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+       case "updated":
+         return sorted.sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
+       case "published":
+         return sorted.sort((a, b) => (b.published ? 1 : 0) - (a.published ? 1 : 0));
+       default:
+         return sorted;
+     }
+   };
 
-  return (
-    <div className="p-4 md:p-8">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
-        <div>
-          <h1 className="text-2xl font-bold text-white font-syne">Blog Management</h1>
-          <p className="text-sm text-[#858585] mt-1">Write and publish articles for your audience</p>
-        </div>
-        <button onClick={openNew} className="btn-primary flex items-center gap-2 px-6 py-2.5 rounded-md font-semibold">
-          <PlusIcon className="w-5 h-5" /> New Article
-        </button>
-      </div>
+   const sortedBlogs = getSortedBlogs(blogs);
 
-      {loading ? (
-        <div className="flex items-center justify-center py-20 text-[#858585] font-mono animate-pulse">
-          {"// fetching_articles..."}
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 gap-4">
-          {blogs.map(b => (
+   const inputClass = "w-full bg-[#1e1e1e] border border-[#3c3c3c] rounded-md px-4 py-2.5 text-[#d4d4d4] text-sm outline-none focus:border-[#007acc] transition-colors placeholder:opacity-30";
+   const labelClass = "block text-[11px] text-[#858585] font-mono mb-2 uppercase tracking-wider";
+
+   return (
+     <div className="p-4 md:p-8">
+       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
+         <div>
+           <h1 className="text-2xl font-bold text-white">Blog Management</h1>
+           <p className="text-sm text-[#858585] mt-1">Write and publish articles for your audience</p>
+         </div>
+         <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+           <select
+             value={sortBy}
+             onChange={(e) => setSortBy(e.target.value as SortOption)}
+             className="bg-[#252526] text-sm text-[#d4d4d4] border border-[#3c3c3c] rounded-md px-4 py-2.5 outline-none focus:border-[#007acc] transition-colors"
+           >
+             <option value="date-newest">Newest First</option>
+             <option value="date-oldest">Oldest First</option>
+             <option value="updated">Recently Updated</option>
+             <option value="title-asc">Title A-Z</option>
+             <option value="title-desc">Title Z-A</option>
+             <option value="published">Published First</option>
+           </select>
+           <button onClick={openNew} className="btn-primary flex items-center gap-2 px-6 py-2.5 rounded-md font-semibold whitespace-nowrap">
+             <PlusIcon className="w-5 h-5" /> New Article
+           </button>
+         </div>
+       </div>
+
+       {loading ? (
+         <div className="flex items-center justify-center py-20 text-[#858585] font-mono animate-pulse">
+           {"// fetching_articles..."}
+         </div>
+       ) : (
+         <div className="grid grid-cols-1 gap-4">
+           {sortedBlogs.map(b => (
             <div key={b.id} className="bg-[#252526] border border-[#3c3c3c] rounded-xl p-4 flex items-center gap-6 group hover:border-[#007acc]/40 transition-colors">
               <div className="w-16 h-12 rounded-lg bg-[#1e1e1e] overflow-hidden flex-shrink-0 border border-[#3c3c3c]">
                 {b.cover_image && <img src={b.cover_image} className="w-full h-full object-cover" />}
@@ -123,11 +173,6 @@ export default function BlogsDashboard() {
               </div>
             </div>
           ))}
-          {blogs.length === 0 && (
-            <div className="py-20 text-center text-[#858585] font-mono border-2 border-dashed border-[#3c3c3c] rounded-xl uppercase tracking-widest">
-              {"// No articles found"}
-            </div>
-          )}
         </div>
       )}
 
@@ -166,14 +211,13 @@ export default function BlogsDashboard() {
                       <label className={labelClass}>Category</label>
                       <select 
                         className={inputClass}
-                        value={editing.category}
+                        value={editing.category || ""}
                         onChange={e => setEditing({...editing, category: e.target.value})}
                       >
-                        <option value="Technical">Technical</option>
-                        <option value="Career">Career</option>
-                        <option value="Design">Design</option>
-                        <option value="Personal">Personal</option>
-                        <option value="Tutorial">Tutorial</option>
+                        <option value="">Select Category</option>
+                        {categories.map(c => (
+                          <option key={c.id} value={c.name}>{c.name}</option>
+                        ))}
                       </select>
                     </div>
                     <div>
@@ -185,6 +229,61 @@ export default function BlogsDashboard() {
                       <label htmlFor="pub-chk" className="text-xs text-[#d4d4d4] cursor-pointer font-medium">Publish this article (make it live)</label>
                     </div>
                   </div>
+                </div>
+
+                {/* SEO Collapsible */}
+                <div className="border border-[#3c3c3c] rounded-xl overflow-hidden">
+                  <button 
+                    onClick={() => setShowSEO(!showSEO)}
+                    className="w-full flex items-center justify-between p-4 bg-[#1e1e1e]/40 hover:bg-[#1e1e1e]/60 transition-colors"
+                  >
+                    <div className="flex items-center gap-2">
+                      <GlobeAltIcon className="w-4 h-4 text-[#007acc]" />
+                      <span className="text-sm font-bold text-white uppercase tracking-wider font-mono">SEO & Meta Configuration</span>
+                    </div>
+                    {showSEO ? <ChevronUpIcon className="w-4 h-4 text-[#858585]" /> : <ChevronDownIcon className="w-4 h-4 text-[#858585]" />}
+                  </button>
+                  
+                  {showSEO && (
+                    <div className="p-6 bg-[#1e1e1e]/20 border-t border-[#3c3c3c] space-y-6 animate-in slide-in-from-top duration-300">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <label className={labelClass}>Meta Title</label>
+                          <input className={inputClass} placeholder="Browser tab title" value={editing.meta_title || ""} onChange={e => setEditing({...editing, meta_title: e.target.value})} />
+                        </div>
+                        <div>
+                          <label className={labelClass}>Canonical URL</label>
+                          <input className={inputClass} placeholder="https://devjahid.vercel.app/blogs/..." value={editing.canonical_url || ""} onChange={e => setEditing({...editing, canonical_url: e.target.value})} />
+                        </div>
+                      </div>
+                      <div>
+                        <label className={labelClass}>Meta Description</label>
+                        <textarea className={`${inputClass} h-20 resize-none`} placeholder="Search engine description..." value={editing.meta_description || ""} onChange={e => setEditing({...editing, meta_description: e.target.value})} />
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <label className={labelClass}>OG Title (Social Share)</label>
+                          <input className={inputClass} value={editing.og_title || ""} onChange={e => setEditing({...editing, og_title: e.target.value})} />
+                        </div>
+                        <div>
+                          <label className={labelClass}>OG Description</label>
+                          <input className={inputClass} value={editing.og_description || ""} onChange={e => setEditing({...editing, og_description: e.target.value})} />
+                        </div>
+                      </div>
+                      <div>
+                        <label className={labelClass}>Schema Data (JSON-LD)</label>
+                        <textarea className={`${inputClass} h-32 font-mono text-[11px]`} placeholder='{ "@context": "https://schema.org", "@type": "BlogPosting", ... }' value={editing.schema_data ? JSON.stringify(editing.schema_data, null, 2) : ""} onChange={e => {
+                          try {
+                            const json = JSON.parse(e.target.value);
+                            setEditing({...editing, schema_data: json});
+                          } catch {
+                            setEditing({...editing, schema_data: e.target.value as any});
+                          }
+                        }} />
+                        <p className="text-[10px] text-yellow-500/50 mt-2 font-mono uppercase tracking-widest">{"// Paste raw JSON for structured data indexing"}</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Title & Slug */}

@@ -1,9 +1,12 @@
 "use client";
 import { Blog } from "@/lib/types";
 import Link from "next/link";
+import Image from "next/image";
+import SafeImage from "@/components/ui/SafeImage";
 import { format } from "date-fns";
 import { CalendarIcon, TagIcon, MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useState, useMemo } from "react";
+import parse from 'html-react-parser'
 
 interface Props { blogs: Blog[] }
 
@@ -43,7 +46,7 @@ export default function BlogsClient({ blogs }: Props) {
 
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10 mb-16">
         <div className="flex-1">
-          <h1 className="text-4xl md:text-6xl font-extrabold text-[var(--vsc-text-bright)] mb-4 font-syne tracking-tighter">
+          <h1 className="text-4xl md:text-6xl font-extrabold text-[var(--vsc-text-bright)] mb-4 tracking-tighter">
             <span className="text-[var(--vsc-keyword)] font-mono text-3xl md:text-4xl">export</span>
             {" "}Articles
           </h1>
@@ -113,7 +116,7 @@ export default function BlogsClient({ blogs }: Props) {
       <div className="grid grid-cols-1 gap-8 md:gap-10">
         {filteredBlogs.map(blog => (
           <Link key={blog.id} href={`/blogs/${blog.slug}`} prefetch={true} className="no-underline group">
-            <div className="vsc-card flex flex-col md:flex-row gap-8 p-6 items-center cursor-pointer border border-[var(--vsc-border)] rounded-2xl transition-all duration-500 hover:border-[var(--vsc-accent)]/40 hover:bg-white/[0.03] relative overflow-hidden bg-gradient-to-br from-[var(--vsc-bg-alt)]/40 to-transparent backdrop-blur-md">
+            <div className="vsc-card flex flex-col md:flex-row gap-8 p-6 items-start cursor-pointer border border-[var(--vsc-border)] rounded-2xl transition-all duration-500 hover:border-[var(--vsc-accent)]/40 hover:bg-white/[0.03] relative overflow-hidden bg-gradient-to-br from-[var(--vsc-bg-alt)]/40 to-transparent backdrop-blur-md">
 
               {/* Desktop Category Badge */}
               <div className="hidden lg:flex absolute top-6 right-6 items-center gap-2 px-4 py-1.5 bg-[var(--vsc-bg)]/80 border border-[var(--vsc-border)] rounded-full text-[10px] text-[var(--vsc-accent)] uppercase font-bold tracking-[0.15em] z-10 shadow-sm">
@@ -123,10 +126,11 @@ export default function BlogsClient({ blogs }: Props) {
 
               {blog.cover_image && (
                 <div className="w-full md:w-56 lg:w-80 aspect-video md:aspect-square lg:aspect-video rounded-xl overflow-hidden flex-shrink-0 border border-white/5 relative">
-                  <img
+                  <SafeImage
                     src={blog.cover_image}
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                     alt={blog.title}
+                    fill
+                    className="object-cover transition-transform duration-1000 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[var(--vsc-bg)]/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 </div>
@@ -144,11 +148,11 @@ export default function BlogsClient({ blogs }: Props) {
                 </div>
 
                 <h2 className="text-2xl  font-extrabold text-[var(--vsc-text-bright)] mb-4 font-jakarta group-hover:text-[var(--vsc-accent)] transition-all duration-300 leading-tight tracking-tight">
-                  {blog.title}
+                  {parse(blog.title)}
                 </h2>
 
                 <p className="text-sm md:text-base text-[var(--vsc-text-dim)] leading-relaxed line-clamp-3 mb-8 opacity-80 group-hover:opacity-100 transition-opacity duration-500 max-w-3xl">
-                  {blog.excerpt}
+                  {parse(blog.excerpt)}
                 </p>
 
                 <div className="flex flex-wrap gap-2.5">
@@ -162,7 +166,7 @@ export default function BlogsClient({ blogs }: Props) {
         ))}
 
         {filteredBlogs.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-32 text-center animate-in zoom-in duration-300">
+          <div className="flex flex-col items-start justify-center py-32 text-left animate-in zoom-in duration-300">
             <div className="w-20 h-20 rounded-full bg-white/[0.02] flex items-center justify-center mb-6 border border-dashed border-[var(--vsc-border)]">
               <MagnifyingGlassIcon className="w-8 h-8 text-[var(--vsc-text-dim)] opacity-30" />
             </div>

@@ -20,14 +20,13 @@ export default function LoginPage() {
       });
       if (res.ok) {
         toast.success("Welcome back!");
-        router.push("/dashboard");
-        router.refresh();
+        router.replace("/dashboard");
       } else {
         toast.error("Invalid credentials");
+        setLoading(false);
       }
     } catch {
       toast.error("Network error");
-    } finally {
       setLoading(false);
     }
   };

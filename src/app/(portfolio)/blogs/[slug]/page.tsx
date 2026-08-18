@@ -4,8 +4,43 @@ import Link from "next/link";
 import { format } from "date-fns";
 import { ArrowLeftIcon, CalendarIcon, EyeIcon } from "@heroicons/react/24/outline";
 import parse from "html-react-parser";
+import { Metadata } from "next";
+import { getActiveTheme } from "@/lib/theme";
+import DimensionArticle from "@/themes/dimension/DimensionArticle";
 
 interface Props { params: Promise<{ slug: string }> }
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const supabase = await createServerClient();
+  const { data: blog } = await supabase.from("blogs").select("*").eq("slug", slug).single();
+
+  if (!blog) return {};
+
+  const title = blog.meta_title || blog.title;
+  const description = blog.meta_description || blog.excerpt;
+  const url = `https://devjahid.vercel.app/blogs/${slug}`;
+
+  return {
+    title: `${title} | Jahid Hasan`,
+    description,
+    alternates: { canonical: blog.canonical_url || url },
+    openGraph: {
+      title: blog.og_title || title,
+      description: blog.og_description || description,
+      url,
+      type: "article",
+      publishedTime: blog.created_at,
+      images: [blog.og_image || blog.cover_image || "/og-image-dimension.png"],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: blog.og_title || title,
+      description: blog.og_description || description,
+      images: [blog.og_image || blog.cover_image || "/og-image-dimension.png"],
+    },
+  };
+}
 
 export const revalidate = 60;
 
@@ -24,8 +59,24 @@ export default async function BlogDetailPage({ params }: Props) {
   // Increment views
   supabase.from("blogs").update({ views: (blog.views ?? 0) + 1 }).eq("id", blog.id).then();
 
+  const theme = await getActiveTheme();
+  if (theme === "dimension") {
+    return <>
+      {blog.schema_data && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(blog.schema_data) }} />}
+      <DimensionArticle blog={blog} />
+    </>;
+  }
+
   return (
     <div className="md:max-w-[90%] mx-auto py-2 md:py-16 animate-in fade-in duration-600">
+      {/* Schema.org JSON-LD */}
+      {blog.schema_data && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(blog.schema_data) }}
+        />
+      )}
+
       <Link
         href="/blogs"
         prefetch={true}
@@ -42,8 +93,8 @@ export default async function BlogDetailPage({ params }: Props) {
           ))}
         </div>
 
-        <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-[var(--vsc-text-bright)] leading-[1.2] mb-6 tracking-tight font-jakarta">
-          {blog.title}
+        <h1 className="text-3xl md:text-4xl font-extrabold text-[var(--vsc-text-bright)] leading-[1.2] mb-6 tracking-tight font-jakarta">
+          {parse(blog.title)}
         </h1>
 
         <div className="flex items-center gap-5 md:gap-8 text-[var(--vsc-text-dim)] text-xs md:text-sm border-b border-[var(--vsc-border)] pb-8 opacity-80">
@@ -59,8 +110,8 @@ export default async function BlogDetailPage({ params }: Props) {
       </header>
 
       {blog.cover_image && (
-        <div className="mb-12 md:mb-16 rounded-2xl overflow-hidden border border-[var(--vsc-border)] shadow-2xl shadow-black/40">
-          <img src={blog.cover_image} alt={blog.title} className="w-full h-auto block" />
+        <div className="mb-12 md:mb-16 rounded-2xl overflow-hidden border relative aspect-1200/630 border-(--vsc-border) shadow-2xl shadow-black/40">
+          <img src={blog.cover_image} alt={blog.title} className="absolute inset-0" />
         </div>
       )}
 
@@ -70,7 +121,6 @@ export default async function BlogDetailPage({ params }: Props) {
 
       <footer className="mt-20 pt-10 border-t border-[var(--vsc-border)] text-center">
         <p className="text-[var(--vsc-text-dim)] text-sm mb-6 italic font-mono opacity-60">
-          // Thanks for reading!
         </p>
         <Link href="/blogs" className="btn-primary px-8 py-3 rounded-md font-semibold inline-block">
           Explore more articles

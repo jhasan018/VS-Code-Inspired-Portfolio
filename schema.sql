@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS projects (
   live_url TEXT DEFAULT '',
   cover_image TEXT DEFAULT '', -- Updated from image_url
   featured BOOLEAN DEFAULT false,
+  project_type TEXT NOT NULL DEFAULT 'company' CHECK (project_type IN ('company', 'client', 'personal')),
   status TEXT DEFAULT 'completed' CHECK (status IN ('completed', 'in-progress', 'planned')),
   order_index INTEGER DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -89,6 +90,14 @@ CREATE TABLE IF NOT EXISTS about (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Shared site configuration. Both frontends use the same content tables above.
+CREATE TABLE IF NOT EXISTS site_settings (
+  key TEXT PRIMARY KEY,
+  value TEXT NOT NULL,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+INSERT INTO site_settings (key, value) VALUES ('frontend_theme', 'vscode') ON CONFLICT (key) DO NOTHING;
+
 -- Policies
 ALTER TABLE profile ENABLE ROW LEVEL SECURITY;
 ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
@@ -96,12 +105,14 @@ ALTER TABLE blogs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE skills ENABLE ROW LEVEL SECURITY;
 ALTER TABLE contact_messages ENABLE ROW LEVEL SECURITY;
 ALTER TABLE about ENABLE ROW LEVEL SECURITY;
+ALTER TABLE site_settings ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Public read all" ON profile FOR SELECT USING (true);
 CREATE POLICY "Public read all" ON projects FOR SELECT USING (true);
 CREATE POLICY "Public read all" ON blogs FOR SELECT USING (true);
 CREATE POLICY "Public read all" ON skills FOR SELECT USING (true);
 CREATE POLICY "Public read all" ON about FOR SELECT USING (true);
+CREATE POLICY "Public read site settings" ON site_settings FOR SELECT USING (true);
 CREATE POLICY "Anyone can insert messages" ON contact_messages FOR INSERT WITH CHECK (true);
 
 -- Allow Dashboard access (Simplified for demo, usually use auth.uid())

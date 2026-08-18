@@ -6,7 +6,7 @@ import toast, { Toaster } from "react-hot-toast";
 import {
   HomeIcon, FolderIcon, BookOpenIcon, CommandLineIcon,
   EnvelopeIcon, UserIcon, ArrowLeftIcon, ArrowRightStartOnRectangleIcon,
-  Bars3Icon, XMarkIcon
+  Bars3Icon, XMarkIcon, TagIcon, GlobeAltIcon, SwatchIcon
 } from "@heroicons/react/24/outline";
 
 const navItems = [
@@ -14,8 +14,11 @@ const navItems = [
   { href: "/dashboard/profile",  label: "Profile",   icon: UserIcon },
   { href: "/dashboard/projects", label: "Projects",  icon: FolderIcon },
   { href: "/dashboard/blogs",    label: "Blogs",     icon: BookOpenIcon },
+  { href: "/dashboard/categories", label: "Categories", icon: TagIcon },
   { href: "/dashboard/skills",   label: "Skills",    icon: CommandLineIcon },
   { href: "/dashboard/messages", label: "Messages",  icon: EnvelopeIcon },
+  { href: "/dashboard/seo",      label: "SEO",       icon: GlobeAltIcon },
+  { href: "/dashboard/theme",    label: "Frontend Theme", icon: SwatchIcon },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -44,7 +47,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Mobile Header */}
       <div className="md:hidden flex items-center justify-between px-4 py-3 bg-[#252526] border-b border-[#3c3c3c] z-[60] sticky top-0">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#007acc] to-[#4ec9b0] flex items-center justify-center text-lg">⚡</div>
+          <div className="w-8 h-8 rounded-lg overflow-hidden border border-[#3c3c3c]">
+            <img src="/jahid-favicon-v2.png" alt="Jahid Hasan" className="w-full h-full object-cover" />
+          </div>
           <span className="font-bold text-white text-sm">Dashboard</span>
         </div>
         <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-1.5 text-[#858585] hover:text-white transition-colors">
@@ -69,7 +74,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Header (Desktop) */}
         <div className="hidden md:block p-6 border-b border-[#3c3c3c]">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#007acc] to-[#4ec9b0] flex items-center justify-center text-xl shadow-lg shadow-[#007acc]/20">⚡</div>
+            <div className="w-9 h-9 rounded-lg overflow-hidden border border-[#3c3c3c] shadow-lg shadow-black/40">
+              <img src="/jahid-favicon-v2.png" alt="Jahid Hasan" className="w-full h-full object-cover" />
+            </div>
             <div>
               <div className="text-sm font-bold text-white uppercase tracking-tight">Admin Console</div>
               <div className="text-[10px] text-[#858585] uppercase tracking-widest font-mono">Portfolio CMS</div>

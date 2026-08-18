@@ -24,7 +24,7 @@ A premium, high-performance developer portfolio built with **Next.js 16**, **Tai
 - **Framework**: [Next.js 16 (App Router)](https://nextjs.org/)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 - **Database & Storage**: [Supabase](https://supabase.com/)
-- **Authentication**: [NextAuth.js](https://next-auth.js.org/)
+- **Authentication**: HTTP-only dashboard session cookie
 - **Typography**: Plus Jakarta Sans, Syne, Inter, Fira Code
 - **Icons**: Heroicons
 - **Deployment**: [Vercel](https://vercel.com/)
@@ -51,10 +51,6 @@ NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 
-# NextAuth
-NEXTAUTH_SECRET=your_secret
-NEXTAUTH_URL=http://localhost:3000
-
 # Admin Credentials
 ADMIN_EMAIL=your_email
 ADMIN_PASSWORD=your_password
@@ -64,6 +60,14 @@ ADMIN_PASSWORD=your_password
 ```bash
 npm run dev
 ```
+
+Next.js will use the first available default port. To choose any local port explicitly:
+
+```bash
+npm run dev -- -p 4173
+```
+
+No application URL or port environment variable is required for local development.
 
 ## 📂 Project Structure
 

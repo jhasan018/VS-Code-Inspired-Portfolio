@@ -6,6 +6,7 @@ import StatusBar from "@/components/vscode/StatusBar";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 export default function VSCodeLayout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -16,7 +17,7 @@ export default function VSCodeLayout({ children }: { children: React.ReactNode }
     const checkMobile = () => {
       const mobile = window.innerWidth < 991;
       setIsMobile(mobile);
-      // Auto-close sidebar on window resize if switching to desktop
+      // Auto-open sidebar on window resize if switching to desktop
       if (!mobile) setIsSidebarOpen(true);
       else setIsSidebarOpen(false);
     };
@@ -34,21 +35,25 @@ export default function VSCodeLayout({ children }: { children: React.ReactNode }
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   return (
-    <div className={`vsc-layout flex flex-col h-screen w-screen overflow-hidden ${isMobile ? 'is-mobile' : ''}`}>
+    <div className={`vsc-layout flex flex-col w-screen overflow-hidden ${isMobile ? 'is-mobile' : ''}`}>
       {/* Title Bar - Elevated z-index and explicit positioning */}
-      <div className="vsc-titlebar flex items-center h-[30px] md:h-[22px] bg-[#3c3c3c] text-[#cccccc] text-[12px] flex-shrink-0 z-[100] relative">
+      <div className="vsc-titlebar flex items-center h-[30px] md:h-[22px] bg-[var(--vsc-bg-alt)] text-[var(--vsc-text)] text-[12px] flex-shrink-0 z-[100] relative">
         {isMobile && (
-          <button 
+          <button
             onClick={toggleSidebar}
-            className="p-2 ml-1 text-[#858585] hover:text-white transition-colors flex items-center justify-center"
+            className="p-2 ml-1 text-[var(--vsc-text-dim)] hover:text-[var(--vsc-text-bright)] transition-colors flex items-center justify-center"
             aria-label="Toggle Menu"
           >
             {isSidebarOpen ? <XMarkIcon className="w-5 h-5" /> : <Bars3Icon className="w-5 h-5" />}
           </button>
         )}
-        <div className="flex-1 text-center font-medium opacity-70 truncate px-4">
-          portfolio — Jahid Hasan — VS Code
-        </div>
+        <Link
+          href="/"
+          prefetch={true}
+          className="flex-1 text-center font-medium opacity-70 hover:opacity-100 transition-opacity truncate px-4 no-underline text-inherit"
+        >
+          Portfolio — Jahid Hasan - Full Stack Developer
+        </Link>
         {/* Placeholder for symmetry on mobile */}
         {isMobile && <div className="w-10" />}
       </div>
@@ -56,20 +61,20 @@ export default function VSCodeLayout({ children }: { children: React.ReactNode }
       {/* Main area */}
       <div className="vsc-main flex flex-1 overflow-hidden relative">
         {/* Sidebar Container */}
-        <div 
+        <div
           className={`
-            fixed md:relative inset-y-0 left-0 flex z-[90] h-full transition-transform duration-300 ease-in-out bg-[var(--vsc-bg)]
-            ${isMobile && !isSidebarOpen ? '-translate-x-full' : 'translate-x-0'}
+            ${isMobile ? 'fixed' : 'relative'} inset-y-0 left-0 flex z-[90] h-full transition-transform duration-300 ease-in-out bg-[var(--vsc-bg)]
+            ${isMobile && !isSidebarOpen ? '-translate-x-[105%]' : 'translate-x-0'}
             ${isMobile ? 'w-[280px]' : ''}
           `}
         >
           <ActivityBar />
           <Sidebar onSelect={() => isMobile && setIsSidebarOpen(false)} />
         </div>
-        
+
         {/* Mobile Overlay */}
         {isMobile && isSidebarOpen && (
-          <div 
+          <div
             onClick={() => setIsSidebarOpen(false)}
             className="fixed inset-0 bg-black/60 z-[80] backdrop-blur-sm animate-in fade-in duration-200"
           />
@@ -100,7 +105,7 @@ export default function VSCodeLayout({ children }: { children: React.ReactNode }
           border-radius: 10px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #5a5a5a;
+          background: var(--vsc-text-dim);
         }
         
         @media (max-width: 991px) {

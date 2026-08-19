@@ -7,6 +7,7 @@ import parse from "html-react-parser";
 import { Metadata } from "next";
 import { getActiveTheme } from "@/lib/theme";
 import DimensionArticle from "@/themes/dimension/DimensionArticle";
+import LumeArticle from "@/themes/lume/LumeArticle";
 
 interface Props { params: Promise<{ slug: string }> }
 
@@ -64,6 +65,12 @@ export default async function BlogDetailPage({ params }: Props) {
     return <>
       {blog.schema_data && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(blog.schema_data) }} />}
       <DimensionArticle blog={blog} />
+    </>;
+  }
+  if (theme === "lume") {
+    return <>
+      {blog.schema_data && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(blog.schema_data) }} />}
+      <LumeArticle blog={blog} />
     </>;
   }
 

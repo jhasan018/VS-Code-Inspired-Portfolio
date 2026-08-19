@@ -1,6 +1,7 @@
 import { createAnonClient } from "@/lib/supabase/server";
 import HomeClient from "@/components/pages/HomeClient";
 import { Home as DimensionHome } from "@/themes/dimension/DimensionPages";
+import { Home as LumeHome } from "@/themes/lume/LumePages";
 import { getActiveTheme } from "@/lib/theme";
 import { Metadata } from "next";
 import { getMetadata, getPageSchema } from "@/lib/seo";
@@ -46,7 +47,7 @@ export default async function HomePage() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }}
         />
       )}
-      {theme === "dimension" ? <DimensionHome profile={profile} about={about} skills={skills ?? []} projects={projects ?? []} blogs={blogs ?? []} /> : <HomeClient profile={profile} about={about} />}
+      {theme === "dimension" ? <DimensionHome profile={profile} about={about} skills={skills ?? []} projects={projects ?? []} blogs={blogs ?? []} /> : theme === "lume" ? <LumeHome profile={profile} about={about} skills={skills ?? []} projects={projects ?? []} blogs={blogs ?? []} /> : <HomeClient profile={profile} about={about} />}
     </>
   );
 }

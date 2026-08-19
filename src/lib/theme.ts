@@ -1,7 +1,9 @@
 import { cache } from "react";
 import { createAnonClient } from "@/lib/supabase/server";
 
-export type FrontendTheme = "vscode" | "dimension";
+export type FrontendTheme = "vscode" | "dimension" | "lume";
+
+export const FRONTEND_THEMES: FrontendTheme[] = ["vscode", "dimension", "lume"];
 
 export const getActiveTheme = cache(async (): Promise<FrontendTheme> => {
   const supabase = createAnonClient();
@@ -11,5 +13,9 @@ export const getActiveTheme = cache(async (): Promise<FrontendTheme> => {
     .eq("key", "frontend_theme")
     .maybeSingle();
 
-  return data?.value === "dimension" ? "dimension" : "vscode";
+  return data?.value === "dimension"
+    ? "dimension"
+    : data?.value === "lume"
+      ? "lume"
+      : "vscode";
 });

@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500&family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cormorant:wght@400;500;600;700&family=Fira+Code:wght@300;400;500&family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
 @import "tailwindcss";
 
 /* Digital Dimension is isolated under its own shell; the original theme remains unchanged. */
@@ -8046,4 +8046,178 @@ input:focus {
 
 textarea:focus {
   outline: none !important;
+}
+
+/* Lume — editorial luxury glass theme (isolated under its own shell). */
+.lume-theme {
+  min-height: 100dvh;
+  background: #0c0a08;
+  color: #f4efe6;
+  font-family: Montserrat, system-ui, sans-serif;
+  position: fixed;
+  inset: 0;
+  overflow: auto;
+  z-index: 100;
+}
+.lume-theme * {
+  box-sizing: border-box;
+}
+.lume-theme a {
+  text-decoration: none;
+  color: inherit;
+}
+.lume-theme main {
+  min-height: 100vh;
+}
+.lume-theme .font-display {
+  font-family: Cormorant, Georgia, serif;
+}
+.lume-theme .font-body {
+  font-family: Montserrat, system-ui, sans-serif;
+}
+.lume-theme.lume-cursor-active,
+.lume-theme.lume-cursor-active * {
+  cursor: none !important;
+}
+.lume-theme em {
+  font-style: italic;
+}
+.lume-theme ::selection {
+  background: hsl(43 90% 58% / 0.35);
+  color: #fff;
+}
+@media (prefers-reduced-motion: reduce) {
+  .lume-theme *,
+  .lume-theme *::before,
+  .lume-theme *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Lume article prose — rendered HTML from the dashboard. */
+.lume-prose {
+  color: #a89e8e;
+  font-size: 1.05rem;
+  line-height: 1.85;
+}
+.lume-prose > *:first-child {
+  margin-top: 0;
+}
+.lume-prose > *:last-child {
+  margin-bottom: 0;
+}
+.lume-prose h2 {
+  font-family: Cormorant, Georgia, serif;
+  font-size: clamp(1.9rem, 4vw, 2.6rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: #f4efe6;
+  margin: 3rem 0 1.2rem;
+}
+.lume-prose h3 {
+  font-family: Cormorant, Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 500;
+  line-height: 1.2;
+  color: #f4efe6;
+  margin: 2.4rem 0 1rem;
+}
+.lume-prose p {
+  margin: 0 0 1.4rem;
+}
+.lume-prose a {
+  color: hsl(43 90% 62%);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: hsl(43 90% 58% / 0.4);
+  transition: text-decoration-color 0.2s;
+}
+.lume-prose a:hover {
+  text-decoration-color: hsl(43 90% 62%);
+}
+.lume-prose ul,
+.lume-prose ol {
+  margin: 0 0 1.4rem;
+  padding-left: 1.4rem;
+}
+.lume-prose li {
+  margin: 0.45rem 0;
+}
+.lume-prose ul li::marker {
+  color: hsl(43 70% 50%);
+}
+.lume-prose ol li::marker {
+  color: hsl(43 70% 50%);
+}
+.lume-prose blockquote {
+  margin: 2.4rem 0;
+  padding: 0.25rem 0 0.25rem 1.6rem;
+  border-left: 2px solid hsl(43 90% 58% / 0.6);
+  font-family: Cormorant, Georgia, serif;
+  font-size: 1.35rem;
+  font-style: italic;
+  line-height: 1.5;
+  color: #e6ddcc;
+}
+.lume-prose img {
+  width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 1.5rem 0;
+}
+.lume-prose code {
+  font-family: "Fira Code", monospace;
+  font-size: 0.9em;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 0.15rem 0.4rem;
+  color: #f4efe6;
+}
+.lume-prose pre {
+  background: #14100c;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  padding: 1.4rem;
+  overflow-x: auto;
+  margin: 1.6rem 0;
+}
+.lume-prose pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+}
+.lume-prose hr {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    hsl(43 90% 58% / 0.4),
+    transparent
+  );
+  margin: 2.8rem 0;
+}
+.lume-prose strong {
+  color: #f4efe6;
+  font-weight: 600;
+}
+.lume-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.6rem 0;
+  font-size: 0.95rem;
+}
+.lume-prose th,
+.lume-prose td {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.7rem 1rem;
+  text-align: left;
+}
+.lume-prose th {
+  color: #f4efe6;
+  background: rgba(255, 255, 255, 0.03);
 }

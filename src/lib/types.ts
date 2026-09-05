@@ -27,6 +27,9 @@ export interface Project {
   github_url: string
   live_url: string
   cover_image: string; // Updated from image_url
+  image_alt?: string;
+  role_label?: string;
+  seo_description?: string;
   featured: boolean
   project_type: 'company' | 'client' | 'personal'
   status: 'completed' | 'in-progress' | 'planned'

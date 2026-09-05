@@ -30,7 +30,9 @@ import type {
 } from "@/lib/types";
 
 import ContactClient from "./DimensionContact";
+import OpenStreetMap from "@/components/ui/OpenStreetMap";
 import { LiquidButton } from "@/components/ui/liquid-glass-button";
+import { blogImageSrc, blogReadTime, projectDescription, projectImageAlt, projectRole } from "@/lib/content-seo";
 
 
 function Reveal({
@@ -114,10 +116,6 @@ export function Home({
   const featured = projects.slice(0, 4);
   const coreSkills = skills.slice(0, 8);
 
-  const heroSummary =
-      profile?.subtitle ||
-      "I build scalable web applications and lead delivery from technical planning through launch.";
-
   return (
       <div className="dimension-page calm-home">
         <motion.div
@@ -147,18 +145,17 @@ export function Home({
                   duration: 0.5,
                 }}
             >
-              FULL-STACK DEVELOPER · PROJECT MANAGER
+              JAHID HASAN · INTERACTIVE WEB DEVELOPER
             </motion.span>
 
-            <h1 aria-label="I design and build dependable digital products.">
+            <h1>
               {[
-                "I design and build",
-                "dependable",
-                "digital products.",
+                "Jahid Hasan builds",
+                "interactive websites",
+                "that move.",
               ].map((line, index) => (
                   <motion.span
                       key={line}
-                      aria-hidden="true"
                       initial={
                         reduceMotion
                             ? false
@@ -204,7 +201,7 @@ export function Home({
                   delay: 0.48,
                 }}
             >
-              <p>{heroSummary}</p>
+              <p>I design and develop animated, fast, and scalable web experiences using React, Next.js, and GSAP — from first line of code to production launch.</p>
 
               <div className="calm-actions">
                 <LiquidButton
@@ -249,7 +246,8 @@ export function Home({
           >
             <Image
                 src="/jahid-hero-professional.png"
-                fill
+                width={1200}
+                height={1500}
                 priority
                 sizes="(max-width: 760px) 100vw, 40vw"
                 alt={`${profile?.name || "Jahid Hasan"} working at his laptop`}
@@ -282,8 +280,7 @@ export function Home({
             </h2>
 
             <p>
-              I combine technical delivery with project leadership,
-              keeping the work clear, maintainable, and accountable.
+              Over {about?.experience_years ?? 3} years building interactive, animation-driven websites for financial institutions, universities, hospitals, and e-commerce brands — combining React, Next.js, PHP, and Laravel with GSAP motion design.
             </p>
           </div>
 
@@ -339,9 +336,9 @@ export function Home({
               <span>02 · SELECTED WORK</span>
 
               <h2>
-                A few projects,
+                Interactive websites built with
                 <br />
-                shown with context.
+                React, Next.js &amp; GSAP
               </h2>
             </div>
 
@@ -384,9 +381,12 @@ export function Home({
                 >
                   <div className="calm-project-media">
                     {project.cover_image ? (
-                        <img
+                        <Image
                             src={project.cover_image}
-                            alt={project.title}
+                            alt={projectImageAlt(project)}
+                            width={1200}
+                            height={750}
+                            sizes="(max-width: 760px) 100vw, 50vw"
                         />
                     ) : (
                         <span>
@@ -410,7 +410,8 @@ export function Home({
 
                     <h3>{project.title}</h3>
 
-                    <p>{project.description}</p>
+                    <p>{projectDescription(project)}</p>
+                    {projectRole(project) && <small>{projectRole(project)}</small>}
 
                     <footer>
                       <div>
@@ -449,12 +450,11 @@ export function Home({
             <span>03 · CAPABILITIES</span>
 
             <h2>
-              Tools chosen for the work.
+              React, Next.js &amp; GSAP — the stack behind interactive web development
             </h2>
 
             <p>
-              A focused stack spanning interfaces, application
-              architecture, content systems, and reliable delivery.
+              I build animated web applications with React, Next.js, TypeScript, and GSAP, backed by PHP, Laravel, Yii2, MySQL, and WordPress. Every project is built for speed, accessibility, and maintainability.
             </p>
 
             <Link href="/skills">
@@ -506,7 +506,7 @@ export function Home({
               <span>04 · JOURNAL</span>
 
               <h2>
-                Notes from practice.
+                Web development guides: Next.js, Laravel &amp; backend architecture
               </h2>
             </div>
 
@@ -556,7 +556,7 @@ export function Home({
                     </h3>
 
                     <small>
-                      {blog.category || "Article"}
+                      {blog.category || "Article"} · {blogReadTime(blog)} min read
                     </small>
 
                     <ArrowUpRight aria-hidden="true" />
@@ -578,6 +578,7 @@ export function Home({
               <br />
               needs clear thinking?
             </h2>
+            <p>I partner with teams who want a website that&apos;s fast, interactive, and built to last — combining full-stack engineering with GSAP-driven animation from planning to launch.</p>
           </div>
 
           <LiquidButton
@@ -617,8 +618,7 @@ export function AboutPage({
           </h1>
 
           <p>
-            Engineering, delivery, and clear communication—treated
-            as one connected discipline.
+            Interactive, animation-driven web development — engineering, delivery, and clear communication treated as one connected discipline.
           </p>
         </header>
 
@@ -643,7 +643,8 @@ export function AboutPage({
           >
             <Image
                 src="/jahid-about-professional.png"
-                fill
+                width={1200}
+                height={1500}
                 sizes="(max-width: 700px) 100vw, 42vw"
                 alt={profile?.name || "Jahid Hasan"}
             />
@@ -660,7 +661,7 @@ export function AboutPage({
               {profile?.name || "Jahid Hasan"}
             </h2>
 
-            <p>{about?.bio || profile?.bio}</p>
+            <p>{about?.bio || profile?.bio || "I'm an interactive web developer and full-stack engineer at Dcastalia Limited, building animated, high-performance websites with React, Next.js, GSAP, PHP, and Laravel."}</p>
 
             <div>
               {[
@@ -1041,9 +1042,12 @@ export function ProjectsPage({
                 <article>
                   <div className="calm-work-media">
                     {p.cover_image ? (
-                        <img
+                        <Image
                             src={p.cover_image}
-                            alt={p.title}
+                            alt={projectImageAlt(p)}
+                            width={1200}
+                            height={750}
+                            sizes="(max-width: 760px) 100vw, 50vw"
                         />
                     ) : (
                         <span>
@@ -1067,7 +1071,8 @@ export function ProjectsPage({
 
                     <h2>{p.title}</h2>
 
-                    <p>{p.description}</p>
+                    <p>{projectDescription(p)}</p>
+                    {projectRole(p) && <small>{projectRole(p)}</small>}
 
                     <footer>
                       <div>
@@ -1360,10 +1365,13 @@ export function BlogsPage({
                 >
                   <div className="calm-blog-thumbnail">
                     {blog.cover_image ? (
-                        <img
-                            src={blog.cover_image}
+                        <Image
+                            src={blogImageSrc(blog.cover_image)}
                             alt=""
-                            loading="lazy"
+                            width={1200}
+                            height={675}
+                            sizes="(max-width: 767px) 100vw, (max-width: 1199px) 50vw, 387px"
+                            className="object-cover"
                         />
                     ) : (
                         <span>
@@ -1511,6 +1519,7 @@ export function ContactPage({
             <ContactClient />
           </div>
         </section>
+        <OpenStreetMap theme="dimension" />
       </div>
   );
 }

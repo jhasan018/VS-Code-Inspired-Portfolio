@@ -8,6 +8,21 @@ import { Metadata } from "next";
 import { getActiveTheme } from "@/lib/theme";
 import DimensionArticle from "@/themes/dimension/DimensionArticle";
 import LumeArticle from "@/themes/lume/LumeArticle";
+import SolaceArticle from "@/themes/solace/SolaceArticle";
+import Image from "next/image";
+import BlogContent from "@/components/ui/BlogContent";
+import LinkedInProfileBadge from "@/components/ui/LinkedInProfileBadge";
+import { blogImageSrc } from "@/lib/content-seo";
+
+function plainText(value: string) {
+  return value.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function conciseTitle(value: string, maxLength = 60) {
+  const clean = plainText(value);
+  if (clean.length <= maxLength) return clean;
+  return clean.slice(0, maxLength + 1).replace(/\s+\S*$/, "").trim();
+}
 
 interface Props { params: Promise<{ slug: string }> }
 
@@ -18,12 +33,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!blog) return {};
 
-  const title = blog.meta_title || blog.title;
-  const description = blog.meta_description || blog.excerpt;
+  const title = conciseTitle(blog.meta_title || blog.title);
+  const description = plainText(blog.meta_description || blog.excerpt || blog.content).slice(0, 160);
   const url = `https://devjahid.vercel.app/blogs/${slug}`;
 
   return {
-    title: `${title} | Jahid Hasan`,
+    title: { absolute: title },
     description,
     alternates: { canonical: blog.canonical_url || url },
     openGraph: {
@@ -63,14 +78,20 @@ export default async function BlogDetailPage({ params }: Props) {
   const theme = await getActiveTheme();
   if (theme === "dimension") {
     return <>
-      {blog.schema_data && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(blog.schema_data) }} />}
+      {blog.schema_data && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(blog.schema_data).replace(/</g, "\\u003c") }} />}
       <DimensionArticle blog={blog} />
     </>;
   }
   if (theme === "lume") {
     return <>
-      {blog.schema_data && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(blog.schema_data) }} />}
+      {blog.schema_data && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(blog.schema_data).replace(/</g, "\\u003c") }} />}
       <LumeArticle blog={blog} />
+    </>;
+  }
+  if (theme === "solace") {
+    return <>
+      {blog.schema_data && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(blog.schema_data).replace(/</g, "\\u003c") }} />}
+      <SolaceArticle blog={blog} />
     </>;
   }
 
@@ -80,7 +101,7 @@ export default async function BlogDetailPage({ params }: Props) {
       {blog.schema_data && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(blog.schema_data) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(blog.schema_data).replace(/</g, "\\u003c") }}
         />
       )}
 
@@ -118,13 +139,25 @@ export default async function BlogDetailPage({ params }: Props) {
 
       {blog.cover_image && (
         <div className="mb-12 md:mb-16 rounded-2xl overflow-hidden border relative aspect-1200/630 border-(--vsc-border) shadow-2xl shadow-black/40">
-          <img src={blog.cover_image} alt={blog.title} className="absolute inset-0" />
+          <Image
+            src={blogImageSrc(blog.cover_image)}
+            alt={plainText(blog.title)}
+            fill
+            sizes="(max-width: 768px) 100vw, 90vw"
+            className="object-cover"
+            priority
+          />
         </div>
       )}
 
       <article className="prose-vsc max-w-none">
-        {parse(blog.content || "")}
+        <BlogContent html={blog.content || ""} articleTitle={blog.title} />
       </article>
+
+      <LinkedInProfileBadge
+        className="mt-16 border-t border-[var(--vsc-border)] pt-10"
+        headingClassName="font-jakarta text-xl font-bold text-[var(--vsc-text-bright)]"
+      />
 
       <footer className="mt-20 pt-10 border-t border-[var(--vsc-border)] text-center">
         <p className="text-[var(--vsc-text-dim)] text-sm mb-6 italic font-mono opacity-60">

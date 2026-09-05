@@ -51,13 +51,14 @@ export default function SkillsClient({ skills }: Props) {
 
       {/* Main Title */}
       <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-[var(--vsc-text-bright)] mb-5 tracking-tighter">
-        Skills
+        Technical skills and stack
       </h1>
 
       {/* Status JSON Header */}
       <div className="font-mono text-sm text-[var(--vsc-text-dim)] mb-14 opacity-70">
         {"{ \"status\": \"always_learning\", \"passion\": \"immeasurable\" }"}
       </div>
+      <p className="text-[var(--vsc-text-dim)] max-w-3xl mb-12 leading-relaxed">I build interactive applications with React, Next.js, TypeScript, and GSAP on the frontend, backed by PHP, Laravel, Yii2, MySQL, and WordPress.</p>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-20 gap-y-14">
         {categories.map((category, idx) => {

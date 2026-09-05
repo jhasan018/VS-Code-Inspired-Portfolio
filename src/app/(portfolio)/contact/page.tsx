@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import ContactClient from "@/components/pages/ContactClient";
 import { ContactPage as DimensionContact } from "@/themes/dimension/DimensionPages";
 import { ContactPage as LumeContact } from "@/themes/lume/LumePages";
+import { ContactPage as SolaceContact } from "@/themes/solace/SolacePages";
 import { getActiveTheme } from "@/lib/theme";
 import { createAnonClient } from "@/lib/supabase/server";
 import { getMetadata, getPageSchema } from "@/lib/seo";
@@ -26,7 +27,7 @@ export default async function ContactPage() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
         />
       )}
-      {theme === "dimension" ? <DimensionContact profile={profile} /> : theme === "lume" ? <LumeContact profile={profile} /> : <ContactClient profile={profile} />}
+      {theme === "dimension" ? <DimensionContact profile={profile} /> : theme === "lume" ? <LumeContact profile={profile} /> : theme === "solace" ? <SolaceContact profile={profile} /> : <ContactClient profile={profile} />}
     </>
   );
 }

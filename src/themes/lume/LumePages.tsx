@@ -17,11 +17,12 @@ import {
   Search,
   UserRound,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import type { About, Blog, Profile, Project, Skill } from "@/lib/types";
 
 import LumeContactForm from "./LumeContactForm";
+import OpenStreetMap from "@/components/ui/OpenStreetMap";
 import {
   Aurora,
   Counter,
@@ -31,7 +32,8 @@ import {
   Reveal,
   TiltCard,
 } from "./LumeFx";
-import LumeHeroScene from "./LumeHeroScene";
+import GradientWaves from "./GradientWaves";
+import { blogImageSrc, blogReadTime, projectDescription, projectImageAlt, projectRole } from "@/lib/content-seo";
 
 /* ------------------------------------------------------------------ */
 /* Shared bits                                                         */
@@ -63,7 +65,7 @@ function GoldLink({
       target={external ? "_blank" : undefined}
       rel={external ? "noreferrer" : undefined}
       className={
-        "group inline-flex items-center gap-2 text-sm font-medium text-[#f4efe6] transition-colors hover:text-[hsl(43_90%_62%)] " +
+        "group inline-flex items-center gap-2 text-sm font-medium text-[#f4efe6] transition-colors hover:text-[hsl(258_94%_84%)] " +
         (className ?? "")
       }
     >
@@ -87,11 +89,11 @@ function GoldButton({
       <Link
         href={href}
         className={
-          "group relative inline-flex items-center gap-2.5 overflow-hidden rounded-full bg-[#d4ac52] px-7 py-3.5 text-sm font-bold text-[#140f06] transition-all duration-300 hover:scale-[1.03] hover:bg-[#e8cd7a] " +
+          "group relative inline-flex items-center gap-2.5 overflow-hidden rounded-full bg-[#A78BFA] px-7 py-3.5 text-sm font-bold text-[#1f0b2b] transition-all duration-300 hover:scale-[1.03] hover:bg-[#C9B9FD] " +
           (className ?? "")
         }
       >
-        <span className="relative z-10 inline-flex items-center gap-2.5">
+        <span className="relative z-10 inline-flex items-center gap-2.5 text-[#1f0b2b]">
           {children}
           <ArrowUpRight className="size-4" />
         </span>
@@ -114,7 +116,7 @@ function GhostButton({
       <Link
         href={href}
         className={
-          "inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/[0.06] px-7 py-3.5 text-sm font-semibold text-[#f4efe6] backdrop-blur-md transition-colors duration-300 hover:border-[hsl(43_90%_58%)] hover:bg-[hsl(43_90%_58%_/_0.14)] hover:text-[#ffe9b8] " +
+          "inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/[0.06] px-7 py-3.5 text-sm font-semibold text-[#f4efe6] backdrop-blur-md transition-colors duration-300 hover:border-[hsl(258_94%_76%)] hover:bg-[hsl(258_94%_76%_/_0.14)] hover:text-[#E0D5FE] " +
           (className ?? "")
         }
       >
@@ -140,7 +142,7 @@ function PageHero({
       <Aurora intensity={0.55} />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,hsl(43_90%_58%_/_0.4),transparent)]"
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,hsl(258_94%_76%_/_0.4),transparent)]"
       />
       <div className="relative mx-auto max-w-7xl">
         <Reveal>
@@ -148,7 +150,7 @@ function PageHero({
         </Reveal>
         <Reveal delay={0.08}>
           <h1 className="mt-6 max-w-4xl font-display text-5xl font-medium leading-[1.02] tracking-[-0.01em] text-[#f4efe6] sm:text-6xl md:text-7xl">
-            {title} <em className="text-[hsl(43_90%_62%)]">{accent}</em>
+            {title} <em className="text-[hsl(258_94%_84%)]">{accent}</em>
           </h1>
         </Reveal>
         <Reveal delay={0.16}>
@@ -188,15 +190,9 @@ export function Home({
   const reduceMotion = useReducedMotion();
   const featured = projects.slice(0, 8);
   const coreSkills = skills.slice(0, 10);
-  const [introDone, setIntroDone] = useState(false);
-  const heroSummary =
-    profile?.subtitle ||
-    "I build scalable web applications and lead delivery from technical planning through launch.";
-
-  useEffect(() => {
-    const t = setTimeout(() => setIntroDone(true), 2200);
-    return () => clearTimeout(t);
-  }, []);
+  // Keep the primary content visible on the first paint. Delaying the hero
+  // behind an intro curtain made the heading/portrait miss the LCP budget.
+  const introDone = true;
 
   return (
     <div className="overflow-hidden bg-[#0c0a08]">
@@ -209,7 +205,7 @@ export function Home({
             exit={{ y: "-100%" }}
             transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1] }}
           >
-            <motion.h2
+            <motion.div
               className="font-display text-[clamp(3rem,12vw,10rem)] font-medium leading-none tracking-[-0.03em] text-[#f4efe6]"
               initial={reduceMotion ? false : { opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -232,7 +228,7 @@ export function Home({
                   {ch}
                 </motion.span>
               ))}
-            </motion.h2>
+            </motion.div>
             <motion.span
               className="mt-6 text-[10px] uppercase tracking-[0.4em] text-[#8a8174]"
               initial={{ opacity: 0 }}
@@ -247,15 +243,38 @@ export function Home({
 
       {/* ---------------- HERO ---------------- */}
       <section className="relative flex min-h-[100svh] flex-col justify-between overflow-hidden px-6 pb-8 pt-24 sm:px-8 sm:pt-28">
-        {/* 3D backdrop */}
-        <LumeHeroScene className="pointer-events-none absolute inset-0 opacity-80" />
+        {/* Gradient waves backdrop */}
+        <div className="pointer-events-none absolute inset-0 opacity-70">
+          <GradientWaves
+            horizonColor="#5227FF"
+            waveColor="#A78BFA"
+            crestColor="#FFFFFF"
+            speed={0.35}
+            amplitude={2.5}
+            waveScale={0.6}
+            waveRatio={0.9}
+            swell={35}
+            turbulence={20}
+            tilt={1.11}
+            zoom={1.0}
+            height={5.5}
+            fogDepth={15}
+            detail="medium"
+            brightness={1.0}
+            opacity={1.0}
+            mouseInteraction={false}
+            parallaxStrength={0.5}
+            grain={false}
+            grainIntensity={0}
+          />
+        </div>
         <Aurora intensity={0.4} />
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse 90% 70% at 55% 40%, transparent, #0c0a08 82%)",
+              "radial-gradient(ellipse 90% 70% at 55% 40%, transparent, rgba(8,6,14,0.75) 92%)",
           }}
         />
         {/* Grain */}
@@ -281,7 +300,7 @@ export function Home({
                 className={
                   "size-1.5 rounded-full " +
                   (profile?.available_for_work
-                    ? "bg-[hsl(43_90%_58%)] shadow-[0_0_10px_hsl(43_90%_58%)]"
+                    ? "bg-[hsl(258_94%_76%)] shadow-[0_0_10px_hsl(258_94%_76%)]"
                     : "bg-[#8a8174]")
                 }
               />
@@ -293,20 +312,18 @@ export function Home({
             </motion.div>
 
             <h1
-              className="font-display text-[clamp(3.4rem,9.5vw,7.5rem)] font-medium leading-[0.92] tracking-[-0.02em] text-[#f4efe6]"
-              aria-label={`${profile?.name || "Jahid Hasan"} — full-stack developer`}
+              className="font-display text-[clamp(2.6rem,9.5vw,7.5rem)] font-medium leading-[0.92] tracking-[-0.02em] text-[#f4efe6]"
             >
               {["Jahid", "Hasan"].map((word, index) => (
                 <span
                   key={word}
-                  className="block overflow-hidden py-[0.09em] -my-[0.09em]"
+                  className="inline-block overflow-hidden px-[0.14em] -mx-[0.14em] py-[0.09em] -my-[0.09em]"
                 >
                   <motion.span
-                    aria-hidden="true"
                     className={
                       "block " +
                       (index === 1
-                        ? "italic text-transparent [-webkit-text-stroke:1.5px_hsl(43_85%_60%)]"
+                        ? "italic text-transparent [-webkit-text-stroke:1.5px_hsl(258_90%_82%)]"
                         : "")
                     }
                     initial={
@@ -320,12 +337,12 @@ export function Home({
                     }}
                   >
                     {word}
+                    {index === 0 ? "\u00A0" : ""}
                   </motion.span>
                 </span>
               ))}
               <span className="block overflow-hidden py-[0.09em] -my-[0.09em]">
                 <motion.span
-                  aria-hidden="true"
                   className="block font-display text-[clamp(1.1rem,2.4vw,1.6rem)] font-normal italic tracking-[0.02em] text-[#a89e8e]"
                   initial={
                     reduceMotion || introDone ? false : { y: "110%" }
@@ -337,7 +354,7 @@ export function Home({
                     ease: [0.22, 1, 0.36, 1],
                   }}
                 >
-                  builds products that ship
+                  builds interactive websites that move
                 </motion.span>
               </span>
             </h1>
@@ -348,7 +365,7 @@ export function Home({
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 2.95 }}
             >
-              {heroSummary}
+              I design and develop animated, fast, and scalable web experiences using React, Next.js, and GSAP — from first line of code to production launch.
             </motion.p>
 
             <motion.div
@@ -390,7 +407,7 @@ export function Home({
               className="absolute left-1/2 top-1/2 -z-10 size-[120%] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-40"
               style={{
                 background:
-                  "radial-gradient(circle, hsl(43 100% 55% / 0.35), transparent 65%)",
+                  "radial-gradient(circle, hsl(258 94% 66% / 0.35), transparent 65%)",
                 filter: "blur(50px)",
               }}
             />
@@ -407,7 +424,8 @@ export function Home({
                 <Image
                   src="/jahid-hero-professional.png"
                   alt={profile?.name || "Jahid Hasan"}
-                  fill
+                  width={1200}
+                  height={1200}
                   priority
                   sizes="(max-width: 1024px) 88vw, 440px"
                   className="object-cover object-[center_22%]"
@@ -431,7 +449,7 @@ export function Home({
               }
               transition={{ duration: 5.4, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
             >
-              <span className="font-display text-3xl text-[hsl(43_90%_62%)]">
+              <span className="font-display text-3xl text-[hsl(258_94%_84%)]">
                 {about?.experience_years ?? 3}+
               </span>
               <span className="block text-[9px] uppercase tracking-[0.2em] text-[#8a8174]">
@@ -446,7 +464,7 @@ export function Home({
               }
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.8 }}
             >
-              <span className="size-1.5 rounded-full bg-[hsl(43_90%_58%)] shadow-[0_0_8px_hsl(43_90%_58%)]" />
+              <span className="size-1.5 rounded-full bg-[hsl(258_94%_76%)] shadow-[0_0_8px_hsl(258_94%_76%)]" />
               <span className="text-[10px] uppercase tracking-[0.18em] text-[#cfc6b7]">
                 {profile?.location || "Dhaka"}
               </span>
@@ -477,7 +495,7 @@ export function Home({
             <span>Scroll</span>
             <span className="relative h-px w-16 bg-white/15">
               <motion.span
-                className="absolute left-0 top-0 h-px w-8 bg-[hsl(43_90%_62%)]"
+                className="absolute left-0 top-0 h-px w-8 bg-[hsl(258_94%_84%)]"
                 animate={
                   reduceMotion ? undefined : { x: [0, 32, 0] }
                 }
@@ -495,10 +513,18 @@ export function Home({
       </section>
 
       {/* ---------------- VELOCITY MARQUEE ---------------- */}
-      <section className="border-y border-white/[0.06] bg-[#0a0806] pt-12">
+      <section className="relative overflow-hidden border-y border-white/[0.08] bg-[#0d0a18] pt-12">
+        {/*<div*/}
+        {/*  aria-hidden*/}
+        {/*  className="pointer-events-none absolute inset-0"*/}
+        {/*  style={{*/}
+        {/*    background:*/}
+        {/*      "linear-gradient(180deg, rgba(255,159,252,0.24), rgba(82,39,255,0.18) 45%, rgba(13,10,24,0) 100%), radial-gradient(70% 55% at 25% 0%, rgba(255,159,252,0.14), transparent 70%)",*/}
+        {/*  }}*/}
+        {/*/>*/}
         <Marquee
           speed={34}
-          className="font-display text-2xl tracking-wide text-[#3a352c] sm:text-4xl"
+          className="relative font-display text-2xl tracking-wide text-[#c9bdf8] sm:text-4xl"
           items={[
             "Full-stack engineering",
             "Product delivery",
@@ -511,8 +537,16 @@ export function Home({
       </section>
 
       {/* ---------------- STATS ---------------- */}
-      <section className="relative px-6 py-24 sm:px-8 sm:py-32">
-        <div className="mx-auto grid max-w-7xl gap-10 sm:grid-cols-3">
+      <section className="relative overflow-hidden px-6 py-24 sm:px-8 sm:py-32">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(255,159,252,0.16), rgba(82,39,255,0.12) 40%, transparent 85%), radial-gradient(60% 45% at 78% 10%, rgba(255,159,252,0.1), transparent 70%)",
+          }}
+        />
+        <div className="relative mx-auto grid max-w-7xl gap-10 sm:grid-cols-3">
           {[
             {
               value: about?.experience_years ?? 3,
@@ -534,10 +568,10 @@ export function Home({
             },
           ].map((stat, i) => (
             <Reveal key={stat.label} delay={i * 0.1}>
-              <div className="group relative rounded-3xl border border-white/[0.07] bg-white/[0.02] p-8 transition-colors duration-500 hover:border-[hsl(43_90%_58%_/_0.35)]">
+              <div className="group relative rounded-3xl border border-white/[0.07] bg-white/[0.02] p-8 transition-colors duration-500 hover:border-[hsl(258_94%_76%_/_0.35)]">
                 <div
                   aria-hidden
-                  className="pointer-events-none absolute inset-x-8 top-0 h-px bg-[linear-gradient(90deg,transparent,hsl(43_90%_58%_/_0.5),transparent)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                  className="pointer-events-none absolute inset-x-8 top-0 h-px bg-[linear-gradient(90deg,transparent,hsl(258_94%_76%_/_0.5),transparent)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                 />
                 <Counter
                   value={stat.value}
@@ -545,9 +579,9 @@ export function Home({
                   className="font-display text-6xl font-medium text-[#f4efe6] sm:text-7xl"
                 />
                 <div className="mt-3 h-px w-10 bg-[hsl(43_70%_50%)]" />
-                <h3 className="mt-4 text-sm font-semibold uppercase tracking-[0.16em] text-[#d8d0c2]">
+                <h2 className="mt-4 text-sm font-semibold uppercase tracking-[0.16em] text-[#d8d0c2]">
                   {stat.label}
-                </h3>
+                </h2>
                 <p className="mt-2 text-sm text-[#8a8174]">{stat.copy}</p>
               </div>
             </Reveal>
@@ -564,8 +598,8 @@ export function Home({
           <div className="mt-6 flex flex-wrap items-end justify-between gap-6">
             <Reveal delay={0.08}>
               <h2 className="max-w-xl font-display text-4xl font-medium leading-[1.05] text-[#f4efe6] sm:text-6xl">
-                A few projects, shown with{" "}
-                <em className="text-[hsl(43_90%_62%)]">context.</em>
+                Interactive websites built with{" "}
+                <em className="text-[hsl(258_94%_84%)]">React, Next.js &amp; GSAP.</em>
               </h2>
             </Reveal>
             <Reveal delay={0.16}>
@@ -585,10 +619,12 @@ export function Home({
                 <article className="relative h-full overflow-hidden rounded-3xl border border-white/[0.07] bg-[#0f0c09]">
                   <div className="relative aspect-[16/9] overflow-hidden">
                     {project.cover_image ? (
-                      <img
+                      <Image
                         src={project.cover_image}
-                        alt={project.title}
-                        loading="lazy"
+                        alt={projectImageAlt(project)}
+                        width={1200}
+                        height={675}
+                        sizes={i === 0 ? "(max-width: 767px) 100vw, (max-width: 1023px) 100vw, 66vw" : "(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"}
                         className="h-full w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]"
                       />
                     ) : (
@@ -611,7 +647,7 @@ export function Home({
                       className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                       style={{
                         background:
-                          "radial-gradient(560px circle at 50% 50%, hsl(43 100% 85% / 0.14), transparent 45%)",
+                          "radial-gradient(560px circle at 50% 50%, hsl(258 94% 84% / 0.14), transparent 45%)",
                       }}
                     />
                   </div>
@@ -629,8 +665,9 @@ export function Home({
                       {project.title}
                     </h3>
                     <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-[#8a8174]">
-                      {project.description}
+                      {projectDescription(project)}
                     </p>
+                    {projectRole(project) && <p className="mt-2 text-xs text-[#b89a55]">{projectRole(project)}</p>}
 
                     <div className="mt-6 flex flex-wrap items-center gap-2">
                       {project.tech_stack?.slice(0, 4).map((t) => (
@@ -673,8 +710,8 @@ export function Home({
           </Reveal>
           <Reveal delay={0.08}>
             <h2 className="mt-5 font-display text-4xl font-medium text-[#f4efe6] sm:text-5xl">
-              Tools chosen for{" "}
-              <em className="text-[hsl(43_90%_62%)]">the work.</em>
+              React, Next.js &amp; GSAP —{" "}
+              <em className="text-[hsl(258_94%_84%)]">the interactive stack.</em>
             </h2>
           </Reveal>
         </div>
@@ -697,7 +734,7 @@ export function Home({
             <div className="mt-6 flex flex-wrap items-end justify-between gap-6">
               <Reveal delay={0.08}>
                 <h2 className="font-display text-4xl font-medium leading-[1.05] text-[#f4efe6] sm:text-6xl">
-                  Notes from <em className="text-[hsl(43_90%_62%)]">practice.</em>
+                  Web development guides: <em className="text-[hsl(258_94%_84%)]">Next.js, Laravel &amp; architecture.</em>
                 </h2>
               </Reveal>
               <Reveal delay={0.16}>
@@ -718,15 +755,16 @@ export function Home({
                       year: "numeric",
                       month: "short",
                       day: "numeric",
+                      timeZone: "UTC",
                     })}
                   </span>
                   <span className="w-24 shrink-0 text-[10px] uppercase tracking-[0.18em] text-[hsl(43_70%_60%)]">
-                    {blog.category || "Article"}
+                    {blogReadTime(blog)} min read
                   </span>
-                  <h3 className="flex-1 font-display text-2xl font-medium leading-snug text-[#f4efe6] transition-colors duration-300 group-hover:text-[hsl(43_90%_62%)] sm:text-3xl">
+                  <h3 className="flex-1 font-display text-2xl font-medium leading-snug text-[#f4efe6] transition-colors duration-300 group-hover:text-[hsl(258_94%_84%)] sm:text-3xl">
                     {blog.title.replace(/<[^>]*>/g, "")}
                   </h3>
-                  <ArrowUpRight className="size-5 text-[#6f675c] transition-all duration-300 group-hover:translate-x-1 group-hover:text-[hsl(43_90%_62%)]" />
+                  <ArrowUpRight className="size-5 text-[#6f675c] transition-all duration-300 group-hover:translate-x-1 group-hover:text-[hsl(258_94%_84%)]" />
                 </Link>
               </Reveal>
             ))}
@@ -746,7 +784,7 @@ export function Home({
               <h2 className="mt-8 font-display text-5xl font-medium leading-[0.98] text-[#f4efe6] sm:text-7xl md:text-8xl">
                 Have a product that
                 <br />
-                <em className="text-[hsl(43_90%_62%)]">
+                <em className="text-[hsl(258_94%_84%)]">
                   needs clear thinking?
                 </em>
               </h2>
@@ -783,7 +821,7 @@ export function AboutPage({
         eyebrow="About · Practice"
         title="A developer who"
         accent="thinks in systems."
-        lead="Engineering, delivery, and clear communication — treated as one connected discipline."
+        lead="Interactive, animation-driven web development — engineering, delivery, and clear communication treated as one connected discipline."
       />
 
       {/* Profile split */}
@@ -796,7 +834,7 @@ export function AboutPage({
                 className="absolute -inset-5 opacity-40"
                 style={{
                   background:
-                    "radial-gradient(ellipse 70% 60% at 50% 50%, hsl(43 100% 58% / 0.35), transparent 70%)",
+                    "radial-gradient(ellipse 70% 60% at 50% 50%, hsl(258 94% 76% / 0.35), transparent 70%)",
                   filter: "blur(30px)",
                 }}
               />
@@ -805,7 +843,8 @@ export function AboutPage({
                   <Image
                     src="/jahid-about-professional.png"
                     alt={profile?.name || "Jahid Hasan"}
-                    fill
+                    width={1200}
+                    height={1500}
                     sizes="(max-width: 1024px) 100vw, 420px"
                     className="object-cover object-[center_15%] saturate-[0.9]"
                   />
@@ -837,7 +876,7 @@ export function AboutPage({
                   <Counter
                     value={about?.experience_years ?? 3}
                     suffix="+"
-                    className="font-display text-5xl text-[hsl(43_90%_62%)]"
+                    className="font-display text-5xl text-[hsl(258_94%_84%)]"
                   />
                   <span className="mt-2 block text-xs uppercase tracking-[0.18em] text-[#8a8174]">
                     Years in practice
@@ -847,7 +886,7 @@ export function AboutPage({
                   <Counter
                     value={about?.projects_count ?? 30}
                     suffix="+"
-                    className="font-display text-5xl text-[hsl(43_90%_62%)]"
+                    className="font-display text-5xl text-[hsl(258_94%_84%)]"
                   />
                   <span className="mt-2 block text-xs uppercase tracking-[0.18em] text-[#8a8174]">
                     Projects delivered
@@ -868,7 +907,7 @@ export function AboutPage({
           <Reveal delay={0.08}>
             <h2 className="mt-6 max-w-2xl font-display text-4xl font-medium leading-[1.05] text-[#f4efe6] sm:text-6xl">
               Built for the problems{" "}
-              <em className="text-[hsl(43_90%_62%)]">after launch.</em>
+              <em className="text-[hsl(258_94%_84%)]">after launch.</em>
             </h2>
           </Reveal>
         </Lamp>
@@ -901,12 +940,12 @@ export function AboutPage({
             },
           ].map((item, i) => (
             <Reveal key={item.title} delay={(i % 3) * 0.1}>
-              <article className="group relative h-full overflow-hidden rounded-3xl border border-white/[0.07] bg-white/[0.02] p-8 transition-colors duration-500 hover:border-[hsl(43_90%_58%_/_0.35)]">
+              <article className="group relative h-full overflow-hidden rounded-3xl border border-white/[0.07] bg-white/[0.02] p-8 transition-colors duration-500 hover:border-[hsl(258_94%_76%_/_0.35)]">
                 <div
                   aria-hidden
-                  className="pointer-events-none absolute inset-x-8 top-0 h-px bg-[linear-gradient(90deg,transparent,hsl(43_90%_58%_/_0.5),transparent)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                  className="pointer-events-none absolute inset-x-8 top-0 h-px bg-[linear-gradient(90deg,transparent,hsl(258_94%_76%_/_0.5),transparent)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                 />
-                <span className="font-display text-4xl text-transparent transition-colors duration-500 group-hover:text-[hsl(43_90%_62%)]" style={{ WebkitTextStroke: "1px #4a4236" }}>
+                <span className="font-display text-4xl text-transparent transition-colors duration-500 group-hover:text-[hsl(258_94%_84%)]" style={{ WebkitTextStroke: "1px #4a3a6e" }}>
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <h3 className="mt-6 font-display text-2xl font-medium text-[#f4efe6]">
@@ -929,7 +968,7 @@ export function AboutPage({
         <Reveal delay={0.08}>
           <h2 className="mt-6 max-w-2xl font-display text-4xl font-medium leading-[1.05] text-[#f4efe6] sm:text-6xl">
             Clear decisions. Dependable{" "}
-            <em className="text-[hsl(43_90%_62%)]">delivery.</em>
+            <em className="text-[hsl(258_94%_84%)]">delivery.</em>
           </h2>
         </Reveal>
 
@@ -952,8 +991,8 @@ export function AboutPage({
             ],
           ].map(([n, title, copy], i) => (
             <Reveal key={n} delay={i * 0.1}>
-              <article className="group relative h-full rounded-3xl border border-white/[0.07] bg-white/[0.02] p-8 transition-colors duration-500 hover:border-[hsl(43_90%_58%_/_0.35)]">
-                <span className="font-display text-5xl text-transparent" style={{ WebkitTextStroke: "1px #4a4236" }}>
+              <article className="group relative h-full rounded-3xl border border-white/[0.07] bg-white/[0.02] p-8 transition-colors duration-500 hover:border-[hsl(258_94%_76%_/_0.35)]">
+                <span className="font-display text-5xl text-transparent" style={{ WebkitTextStroke: "1px #4a3a6e" }}>
                   {n}
                 </span>
                 <h3 className="mt-6 font-display text-2xl font-medium text-[#f4efe6]">
@@ -977,7 +1016,7 @@ export function AboutPage({
           <Reveal delay={0.08}>
             <h2 className="mt-6 font-display text-4xl font-medium leading-[1.05] text-[#f4efe6] sm:text-6xl">
               Roles that shaped the{" "}
-              <em className="text-[hsl(43_90%_62%)]">practice.</em>
+              <em className="text-[hsl(258_94%_84%)]">practice.</em>
             </h2>
           </Reveal>
         </Lamp>
@@ -1002,9 +1041,9 @@ export function AboutPage({
                   <Reveal key={`${item.year}-${i}`} delay={0.05}>
                     <div className="group relative flex gap-8 sm:gap-12">
                       <span
-                        className="relative z-10 mt-1.5 size-[18px] shrink-0 rounded-full border-2 border-[hsl(43_90%_58%)] bg-[#0c0a08] shadow-[0_0_16px_-2px_hsl(43_90%_58%_/_0.6)] sm:size-[26px]"
+                        className="relative z-10 mt-1.5 size-[18px] shrink-0 rounded-full border-2 border-[hsl(258_94%_76%)] bg-[#0c0a08] shadow-[0_0_16px_-2px_hsl(258_94%_76%_/_0.6)] sm:size-[26px]"
                       />
-                      <article className="flex-1 rounded-3xl border border-white/[0.07] bg-white/[0.02] p-7 transition-colors duration-500 group-hover:border-[hsl(43_90%_58%_/_0.35)] sm:p-8">
+                      <article className="flex-1 rounded-3xl border border-white/[0.07] bg-white/[0.02] p-7 transition-colors duration-500 group-hover:border-[hsl(258_94%_76%_/_0.35)] sm:p-8">
                         <div className="flex flex-wrap items-baseline justify-between gap-3">
                           <span className="text-[10px] uppercase tracking-[0.2em] text-[hsl(43_70%_60%)]">
                             {item.year || String(i + 1).padStart(2, "0")}
@@ -1093,7 +1132,7 @@ export function AboutPage({
           <div className="flex flex-col items-start justify-between gap-8 rounded-3xl border border-white/[0.07] bg-[linear-gradient(135deg,rgba(216,178,92,0.08),transparent_60%)] p-10 sm:flex-row sm:items-center">
             <h2 className="font-display text-3xl font-medium leading-tight text-[#f4efe6] sm:text-4xl">
               See the work behind{" "}
-              <em className="text-[hsl(43_90%_62%)]">the approach.</em>
+              <em className="text-[hsl(258_94%_84%)]">the approach.</em>
             </h2>
             <GoldButton href="/projects">View selected projects</GoldButton>
           </div>
@@ -1172,7 +1211,7 @@ export function ProjectsPage({ projects }: { projects: Project[] }) {
                   className={
                     "group relative overflow-hidden rounded-2xl border p-5 text-left transition-all duration-300 " +
                     (active
-                      ? "border-[hsl(43_90%_58%_/_0.5)] bg-[linear-gradient(135deg,rgba(216,178,92,0.12),transparent_70%)]"
+                      ? "border-[hsl(258_94%_76%_/_0.5)] bg-[linear-gradient(135deg,rgba(255,159,252,0.12),transparent_70%)]"
                       : "border-white/[0.07] bg-white/[0.02] hover:border-white/[0.18]")
                   }
                 >
@@ -1180,7 +1219,7 @@ export function ProjectsPage({ projects }: { projects: Project[] }) {
                     <Icon
                       className={
                         "size-5 " +
-                        (active ? "text-[hsl(43_90%_62%)]" : "text-[#8a8174]")
+                        (active ? "text-[hsl(258_94%_84%)]" : "text-[#8a8174]")
                       }
                     />
                     <span
@@ -1198,7 +1237,7 @@ export function ProjectsPage({ projects }: { projects: Project[] }) {
                   {active && (
                     <motion.span
                       layoutId="lume-project-tab"
-                      className="absolute inset-x-0 bottom-0 h-[2px] bg-[linear-gradient(90deg,#f4d98a,#b8892f)]"
+                      className="absolute inset-x-0 bottom-0 h-[2px] bg-[linear-gradient(90deg,#FFD9FE,#7c3aed)]"
                     />
                   )}
                 </button>
@@ -1217,7 +1256,7 @@ export function ProjectsPage({ projects }: { projects: Project[] }) {
                 className={
                   "rounded-full border px-4 py-1.5 text-xs transition-colors duration-300 " +
                   (industry === item
-                    ? "border-[hsl(43_90%_58%_/_0.5)] bg-[hsl(43_70%_40%)] text-[#f4efe6]"
+                    ? "border-[hsl(258_94%_76%_/_0.5)] bg-[hsl(268_84%_55%)] text-[#f4efe6]"
                     : "border-white/10 bg-white/[0.02] text-[#a89e8e] hover:border-white/25")
                 }
               >
@@ -1236,13 +1275,15 @@ export function ProjectsPage({ projects }: { projects: Project[] }) {
           {filtered.map((p, i) => (
             <Reveal key={p.id} delay={(i % 2) * 0.08}>
               <TiltCard className="group h-full rounded-3xl">
-                <article className="relative h-full overflow-hidden rounded-3xl border border-white/[0.07] bg-[#0f0c09] transition-colors duration-500 hover:border-[hsl(43_90%_58%_/_0.35)]">
+                <article className="relative h-full overflow-hidden rounded-3xl border border-white/[0.07] bg-[#0f0c09] transition-colors duration-500 hover:border-[hsl(258_94%_76%_/_0.35)]">
                   <div className="relative aspect-[16/9] overflow-hidden">
                     {p.cover_image ? (
-                      <img
+                      <Image
                         src={p.cover_image}
-                        alt={p.title}
-                        loading="lazy"
+                        alt={projectImageAlt(p)}
+                        width={1200}
+                        height={675}
+                        sizes="(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 387px"
                         className="h-full w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]"
                       />
                     ) : (
@@ -1274,8 +1315,9 @@ export function ProjectsPage({ projects }: { projects: Project[] }) {
                     {p.title}
                   </h2>
                   <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-[#8a8174]">
-                    {p.description}
+                    {projectDescription(p)}
                   </p>
+                  {projectRole(p) && <p className="mt-2 text-xs text-[#b89a55]">{projectRole(p)}</p>}
 
                   <div className="mt-5 flex flex-wrap gap-2">
                     {p.tech_stack?.slice(0, 4).map((t) => (
@@ -1318,7 +1360,7 @@ export function ProjectsPage({ projects }: { projects: Project[] }) {
           <div className="flex flex-col items-start justify-between gap-8 rounded-3xl border border-white/[0.07] bg-[linear-gradient(135deg,rgba(216,178,92,0.08),transparent_60%)] p-10 sm:flex-row sm:items-center">
             <h2 className="font-display text-3xl font-medium leading-tight text-[#f4efe6] sm:text-4xl">
               Have something complex to{" "}
-              <em className="text-[hsl(43_90%_62%)]">bring to life?</em>
+              <em className="text-[hsl(258_94%_84%)]">bring to life?</em>
             </h2>
             <GoldButton href="/contact">Discuss the project</GoldButton>
           </div>
@@ -1377,7 +1419,7 @@ export function SkillsPage({ skills }: { skills: Skill[] }) {
               <Eyebrow>01 · Working set</Eyebrow>
               <h2 className="mt-6 max-w-2xl font-display text-4xl font-medium leading-[1.05] text-[#f4efe6] sm:text-5xl">
                 Choose for longevity. Build for{" "}
-                <em className="text-[hsl(43_90%_62%)]">change.</em>
+                <em className="text-[hsl(258_94%_84%)]">change.</em>
               </h2>
               <p className="mt-6 max-w-xl text-sm leading-relaxed text-[#8a8174]">
                 I use familiar, maintainable tools and introduce complexity only
@@ -1386,7 +1428,7 @@ export function SkillsPage({ skills }: { skills: Skill[] }) {
               </p>
             </div>
             <div className="flex items-baseline gap-3">
-              <span className="font-display text-5xl text-[hsl(43_90%_62%)]">
+              <span className="font-display text-5xl text-[hsl(258_94%_84%)]">
                 {totalSkills}
               </span>
               <span className="text-xs uppercase tracking-[0.2em] text-[#8a8174]">
@@ -1402,9 +1444,9 @@ export function SkillsPage({ skills }: { skills: Skill[] }) {
         <div className="mt-12 grid gap-6 lg:grid-cols-2">
           {orderedGroups.map(([category, list], i) => (
             <Reveal key={category} delay={(i % 2) * 0.08}>
-              <article className="group h-full overflow-hidden rounded-3xl border border-white/[0.07] bg-white/[0.02] transition-colors duration-500 hover:border-[hsl(43_90%_58%_/_0.35)]">
+              <article className="group h-full overflow-hidden rounded-3xl border border-white/[0.07] bg-white/[0.02] transition-colors duration-500 hover:border-[hsl(258_94%_76%_/_0.35)]">
                 <header className="flex items-center gap-5 border-b border-white/[0.06] px-8 py-6">
-                  <span className="font-display text-3xl text-transparent transition-colors duration-500 group-hover:text-[hsl(43_90%_62%)]" style={{ WebkitTextStroke: "1px #4a4236" }}>
+                  <span className="font-display text-3xl text-transparent transition-colors duration-500 group-hover:text-[hsl(258_94%_84%)]" style={{ WebkitTextStroke: "1px #4a3a6e" }}>
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <div className="flex-1">
@@ -1427,14 +1469,14 @@ export function SkillsPage({ skills }: { skills: Skill[] }) {
                         <span className="text-sm font-medium text-[#d8d0c2]">
                           {skill.name}
                         </span>
-                        <span className="font-display text-lg text-[hsl(43_90%_62%)]">
+                        <span className="font-display text-lg text-[hsl(258_94%_84%)]">
                           {skill.proficiency}
                           <span className="ml-0.5 text-xs text-[#8a8174]">%</span>
                         </span>
                       </div>
                       <div className="mt-2 h-[4px] overflow-hidden rounded-full bg-white/[0.06]">
                         <motion.div
-                          className="h-full rounded-full bg-[linear-gradient(90deg,#b8892f,#f4d98a)] shadow-[0_0_12px_hsl(43_90%_58%_/_0.5)]"
+                          className="h-full rounded-full bg-[linear-gradient(90deg,#7c3aed,#FFD9FE)] shadow-[0_0_12px_hsl(258_94%_76%_/_0.5)]"
                           initial={{ width: 0 }}
                           whileInView={{ width: `${skill.proficiency}%` }}
                           viewport={{ once: true, margin: "-40px" }}
@@ -1457,7 +1499,7 @@ export function SkillsPage({ skills }: { skills: Skill[] }) {
           <div className="flex flex-col items-start justify-between gap-8 rounded-3xl border border-white/[0.07] bg-[linear-gradient(135deg,rgba(216,178,92,0.08),transparent_60%)] p-10 sm:flex-row sm:items-center">
             <h2 className="font-display text-3xl font-medium leading-tight text-[#f4efe6] sm:text-4xl">
               Need this capability on a{" "}
-              <em className="text-[hsl(43_90%_62%)]">real product?</em>
+              <em className="text-[hsl(258_94%_84%)]">real product?</em>
             </h2>
             <GoldButton href="/contact">Start a conversation</GoldButton>
           </div>
@@ -1502,14 +1544,14 @@ export function BlogsPage({ blogs }: { blogs: Blog[] }) {
       <section className="mx-auto max-w-7xl px-6 pt-16 sm:px-8 sm:pt-24">
         {/* Controls */}
         <div className="flex flex-col gap-6 border-b border-white/[0.06] pb-10 lg:flex-row lg:items-center lg:justify-between">
-          <label className="flex w-full max-w-sm items-center gap-3 rounded-full border border-white/10 bg-white/[0.03] px-5 py-3 transition-colors focus-within:border-[hsl(43_90%_58%_/_0.5)]">
-            <Search className="size-4 text-[#6f675c]" />
+          <label className="flex w-full max-w-sm items-center gap-3 rounded-full border border-white/10 bg-white/[0.03] px-5 py-3 transition-colors focus-within:border-[hsl(258_94%_76%_/_0.5)]">
+            <Search className="size-4 text-[#938a7d]" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search articles or tags"
               aria-label="Search articles"
-              className="w-full bg-transparent text-sm text-[#f4efe6] outline-none placeholder:text-[#6f675c]"
+              className="w-full bg-transparent text-sm text-[#f4efe6] outline-none placeholder:text-[#938a7d]"
             />
           </label>
 
@@ -1521,7 +1563,7 @@ export function BlogsPage({ blogs }: { blogs: Blog[] }) {
                 className={
                   "rounded-full border px-4 py-2 text-xs transition-colors duration-300 " +
                   (category === item
-                    ? "border-[hsl(43_90%_58%_/_0.5)] bg-[hsl(43_70%_40%)] text-[#f4efe6]"
+                    ? "border-[hsl(258_94%_76%_/_0.5)] bg-[hsl(268_84%_55%)] text-[#f4efe6]"
                     : "border-white/10 bg-white/[0.02] text-[#a89e8e] hover:border-white/25")
                 }
               >
@@ -1531,7 +1573,7 @@ export function BlogsPage({ blogs }: { blogs: Blog[] }) {
           </div>
         </div>
 
-        <div className="mt-8 text-[10px] uppercase tracking-[0.22em] text-[#6f675c]">
+        <div className="mt-8 text-[10px] uppercase tracking-[0.22em] text-[#938a7d]">
           {String(filtered.length).padStart(2, "0")} articles shown
         </div>
 
@@ -1541,15 +1583,17 @@ export function BlogsPage({ blogs }: { blogs: Blog[] }) {
             <Reveal key={blog.id} delay={(i % 3) * 0.06}>
               <Link
                 href={`/blogs/${blog.slug}`}
-                className="group flex h-full flex-col overflow-hidden rounded-3xl border border-white/[0.07] bg-[#0f0c09] transition-colors duration-500 hover:border-[hsl(43_90%_58%_/_0.35)]"
+                className="group flex h-full flex-col overflow-hidden rounded-3xl border border-white/[0.07] bg-[#0f0c09] transition-colors duration-500 hover:border-[hsl(258_94%_76%_/_0.35)]"
               >
                 <div className="relative aspect-[16/10] overflow-hidden">
                   {blog.cover_image ? (
-                    <img
-                      src={blog.cover_image}
+                    <Image
+                      src={blogImageSrc(blog.cover_image)}
                       alt=""
-                      loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.05]"
+                      width={1200}
+                      height={750}
+                      sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
+                      className="object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.05]"
                     />
                   ) : (
                     <div className="grid h-full w-full place-items-center bg-[linear-gradient(135deg,#17130e,#0e0b08)]">
@@ -1569,15 +1613,16 @@ export function BlogsPage({ blogs }: { blogs: Blog[] }) {
                     <span className="text-[hsl(43_70%_60%)]">
                       {blog.category || "Article"}
                     </span>
-                    <span className="text-[#6f675c]">
+                    <span className="text-[#938a7d]">
                       {new Date(blog.created_at).toLocaleDateString("en", {
                         year: "numeric",
                         month: "short",
                         day: "numeric",
+                        timeZone: "UTC",
                       })}
                     </span>
                   </div>
-                  <h2 className="mt-4 font-display text-2xl font-medium leading-snug text-[#f4efe6] transition-colors duration-300 group-hover:text-[hsl(43_90%_62%)]">
+                  <h2 className="mt-4 font-display text-2xl font-medium leading-snug text-[#f4efe6] transition-colors duration-300 group-hover:text-[hsl(258_94%_84%)]">
                     {blog.title.replace(/<[^>]*>/g, "")}
                   </h2>
                   <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-[#8a8174]">
@@ -1594,7 +1639,7 @@ export function BlogsPage({ blogs }: { blogs: Blog[] }) {
         </div>
 
         {!filtered.length && (
-          <p className="py-20 text-center text-sm text-[#6f675c]">
+          <p className="py-20 text-center text-sm text-[#938a7d]">
             No articles match that search.
           </p>
         )}
@@ -1624,7 +1669,7 @@ export function ContactPage({ profile }: { profile: Profile | null }) {
               <Eyebrow>01 · Start here</Eyebrow>
               <h2 className="mt-6 font-display text-4xl font-medium leading-[1.05] text-[#f4efe6] sm:text-5xl">
                 Tell me what needs to{" "}
-                <em className="text-[hsl(43_90%_62%)]">change.</em>
+                <em className="text-[hsl(258_94%_84%)]">change.</em>
               </h2>
               <p className="mt-6 max-w-sm text-sm leading-relaxed text-[#8a8174]">
                 Share the context, desired outcome, and important constraints.
@@ -1636,9 +1681,9 @@ export function ContactPage({ profile }: { profile: Profile | null }) {
               <div className="mt-12 flex flex-col gap-4">
                 <a
                   href={`mailto:${profile?.email || "jahid.bubtcse29@gmail.com"}`}
-                  className="group flex items-center gap-4 rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5 transition-colors duration-300 hover:border-[hsl(43_90%_58%_/_0.4)]"
+                  className="group flex items-center gap-4 rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5 transition-colors duration-300 hover:border-[hsl(258_94%_76%_/_0.4)]"
                 >
-                  <span className="grid size-11 place-items-center rounded-xl bg-[hsl(43_70%_40%)]">
+                  <span className="grid size-11 place-items-center rounded-xl bg-[hsl(268_84%_55%)]">
                     <Mail className="size-5 text-[#f4efe6]" />
                   </span>
                   <span>
@@ -1652,7 +1697,7 @@ export function ContactPage({ profile }: { profile: Profile | null }) {
                 </a>
 
                 <div className="flex items-center gap-4 rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5">
-                  <span className="grid size-11 place-items-center rounded-xl bg-[hsl(43_70%_40%)]">
+                  <span className="grid size-11 place-items-center rounded-xl bg-[hsl(268_84%_55%)]">
                     <MapPin className="size-5 text-[#f4efe6]" />
                   </span>
                   <span>
@@ -1673,7 +1718,7 @@ export function ContactPage({ profile }: { profile: Profile | null }) {
                   className={
                     "size-2 rounded-full " +
                     (profile?.available_for_work
-                      ? "bg-[hsl(43_90%_58%)] shadow-[0_0_12px_hsl(43_90%_58%)]"
+                      ? "bg-[hsl(258_94%_76%)] shadow-[0_0_12px_hsl(258_94%_76%)]"
                       : "bg-[#6f675c]")
                   }
                 />
@@ -1698,6 +1743,7 @@ export function ContactPage({ profile }: { profile: Profile | null }) {
             </div>
           </Reveal>
         </div>
+        <OpenStreetMap theme="lume" />
       </section>
     </div>
   );

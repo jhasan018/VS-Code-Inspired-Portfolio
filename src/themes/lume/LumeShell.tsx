@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import {
   AnimatePresence,
   motion,
-  useMotionValue,
   useMotionValueEvent,
   useReducedMotion,
   useScroll,
@@ -15,6 +14,7 @@ import { ArrowUpRight, Menu, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
+import SplashCursor from "./SplashCursor";
 
 const links = [
   ["/", "Home"],
@@ -34,6 +34,7 @@ export default function LumeShell({
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [prevPathname, setPrevPathname] = useState(pathname);
+  const [cursorEnabled, setCursorEnabled] = useState(false);
   const reduceMotion = useReducedMotion();
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -49,19 +50,25 @@ export default function LumeShell({
     setScrolled(v > 24);
   });
 
-  const cursorEnabled =
-    !reduceMotion &&
-    (typeof window === "undefined" ||
-      !window.matchMedia("(pointer: coarse)").matches);
+  useEffect(() => {
+    const pointerQuery = window.matchMedia("(pointer: coarse)");
+    const updateCursor = () => {
+      setCursorEnabled(!reduceMotion && !pointerQuery.matches);
+    };
+    const frame = window.requestAnimationFrame(updateCursor);
+    pointerQuery.addEventListener("change", updateCursor);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      pointerQuery.removeEventListener("change", updateCursor);
+    };
+  }, [reduceMotion]);
 
   return (
-    <div
-      className={cn("lume-theme", cursorEnabled && "lume-cursor-active")}
-      ref={scrollRef}
-    >
+    <div className="lume-theme" ref={scrollRef}>
       <a
         href="#lume-main"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:rounded-full focus:bg-[hsl(43_90%_58%)] focus:px-5 focus:py-2.5 focus:text-sm focus:font-semibold focus:text-black"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:rounded-full focus:bg-[hsl(258_94%_76%)] focus:px-5 focus:py-2.5 focus:text-sm focus:font-semibold focus:text-black"
       >
         Skip to content
       </a>
@@ -98,7 +105,7 @@ export default function LumeShell({
             className="group flex items-center gap-3"
             aria-label="Jahid Hasan — home"
           >
-            <span className="grid size-9 place-items-center rounded-xl border border-white/10 bg-gradient-to-br from-[#f4d98a] to-[#b8892f] font-display text-lg font-semibold text-black shadow-[0_0_24px_-6px_hsl(43_90%_58%)]">
+            <span className="grid size-9 place-items-center rounded-xl border border-white/10 bg-gradient-to-br from-[#FFD9FE] to-[#7c3aed] font-display text-lg font-semibold text-black shadow-[0_0_24px_-6px_hsl(258_94%_76%)]">
               J
             </span>
             <span className="hidden flex-col leading-tight sm:flex">
@@ -106,7 +113,7 @@ export default function LumeShell({
                 Jahid Hasan
               </span>
               <span className="text-[10px] uppercase tracking-[0.22em] text-[#8a8174]">
-                Full-stack developer
+                Interactive web developer
               </span>
             </span>
           </Link>
@@ -132,7 +139,7 @@ export default function LumeShell({
                       {isActive && (
                         <motion.span
                           layoutId="lume-nav-pill"
-                          className="absolute inset-0 rounded-full bg-[linear-gradient(135deg,#f4d98a,#c99b3f)] shadow-[0_4px_20px_-4px_hsl(43_90%_58%_/_0.6)]"
+                          className="absolute inset-0 rounded-full bg-[linear-gradient(135deg,#FFD9FE,#c4b5fd)] shadow-[0_4px_20px_-4px_hsl(258_94%_76%_/_0.6)]"
                           transition={{ type: "spring", bounce: 0.24, duration: 0.55 }}
                         />
                       )}
@@ -147,7 +154,7 @@ export default function LumeShell({
           <div className="flex items-center gap-3">
             <Link
               href="/contact"
-              className="group hidden items-center gap-2 rounded-full border border-white/12 bg-white/[0.04] px-5 py-2.5 text-sm text-[#f4efe6] backdrop-blur-md transition-colors duration-300 hover:border-[hsl(43_90%_58%_/_0.5)] sm:inline-flex"
+              className="group hidden items-center gap-2 rounded-full border border-white/12 bg-white/[0.04] px-5 py-2.5 text-sm text-[#f4efe6] backdrop-blur-md transition-colors duration-300 hover:border-[hsl(258_94%_76%_/_0.5)] sm:inline-flex"
             >
               Let&apos;s talk
               <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -196,11 +203,11 @@ export default function LumeShell({
                         className={cn(
                           "flex items-baseline gap-5 border-b border-white/[0.06] py-5 font-display text-4xl transition-colors",
                           isActive
-                            ? "text-[hsl(43_90%_62%)]"
-                            : "text-[#f4efe6] hover:text-[hsl(43_90%_62%)]",
+                            ? "text-[hsl(258_94%_84%)]"
+                            : "text-[#f4efe6] hover:text-[hsl(258_94%_84%)]",
                         )}
                       >
-                        <span className="text-xs font-body tracking-[0.2em] text-[#6f675c]">
+                        <span className="text-xs font-body tracking-[0.2em] text-[#938a7d]">
                           {String(i + 1).padStart(2, "0")}
                         </span>
                         {label}
@@ -211,10 +218,10 @@ export default function LumeShell({
               </ul>
             </nav>
 
-            <div className="flex items-center justify-between text-xs uppercase tracking-[0.18em] text-[#6f675c]">
+            <div className="flex items-center justify-between text-xs uppercase tracking-[0.18em] text-[#938a7d]">
               <span>Dhaka, Bangladesh</span>
               <span className="flex items-center gap-2 text-[#b89a55]">
-                <span className="size-1.5 rounded-full bg-[hsl(43_90%_58%)] shadow-[0_0_10px_hsl(43_90%_58%)]" />
+                <span className="size-1.5 rounded-full bg-[hsl(258_94%_76%)] shadow-[0_0_10px_hsl(258_94%_76%)]" />
                 Available
               </span>
             </div>
@@ -226,7 +233,7 @@ export default function LumeShell({
       <main id="lume-main">{children}</main>
 
       <LumeFooter />
-      <LumeCursor enabled={cursorEnabled} />
+      {cursorEnabled && <SplashCursor RAINBOW_MODE={false} COLOR="#A78BFA" />}
     </div>
   );
 }
@@ -249,62 +256,9 @@ function ScrollProgress({
   if (reduceMotion) return null;
   return (
     <motion.div
-      className="fixed inset-x-0 top-0 z-[130] h-[2px] origin-left bg-[linear-gradient(90deg,#f4d98a,#c99b3f,#f4d98a)]"
+      className="fixed inset-x-0 top-0 z-[130] h-[2px] origin-left bg-[linear-gradient(90deg,#FFD9FE,#8b5cf6,#FFD9FE)]"
       style={{ scaleX }}
     />
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Custom cursor — dot + trailing ring                                 */
-/* ------------------------------------------------------------------ */
-
-function LumeCursor({ enabled }: { enabled: boolean }) {
-  const reduceMotion = useReducedMotion();
-  const x = useMotionValue(-100);
-  const y = useMotionValue(-100);
-  const ringX = useSpring(x, { stiffness: 260, damping: 24, mass: 0.6 });
-  const ringY = useSpring(y, { stiffness: 260, damping: 24, mass: 0.6 });
-  const [active, setActive] = useState(false);
-
-  useEffect(() => {
-    if (!enabled || reduceMotion) return;
-    const onMove = (e: PointerEvent) => {
-      x.set(e.clientX);
-      y.set(e.clientY);
-    };
-    const onOver = (e: MouseEvent) => {
-      const target = (e.target as HTMLElement | null)?.closest(
-        "a, button, [role='button'], input, textarea, label",
-      );
-      setActive(!!target);
-    };
-    window.addEventListener("pointermove", onMove, { passive: true });
-    window.addEventListener("mouseover", onOver, { passive: true });
-    return () => {
-      window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("mouseover", onOver);
-    };
-  }, [enabled, reduceMotion, x, y]);
-
-  if (!enabled || reduceMotion) return null;
-
-  return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 z-[200] hidden lg:block">
-      <motion.div
-        className="absolute size-2 rounded-full bg-[hsl(43_90%_58%)] shadow-[0_0_12px_hsl(43_90%_58%)]"
-        style={{ x, y, translateX: "-50%", translateY: "-50%" }}
-      />
-      <motion.div
-        className="absolute size-8 rounded-full border border-[hsl(43_90%_58%_/_0.5)]"
-        style={{ x: ringX, y: ringY, translateX: "-50%", translateY: "-50%" }}
-        animate={{
-          scale: active ? 1.6 : 1,
-          opacity: active ? 0.9 : 0.5,
-        }}
-        transition={{ duration: 0.3 }}
-      />
-    </div>
   );
 }
 
@@ -320,37 +274,39 @@ function LumeFooter() {
         className="pointer-events-none absolute -top-40 left-1/2 h-80 w-[900px] -translate-x-1/2 rounded-[50%] opacity-40"
         style={{
           background:
-            "radial-gradient(ellipse 55% 60% at 50% 100%, hsl(43 100% 55% / 0.45), transparent 70%)",
+            "radial-gradient(ellipse 55% 60% at 50% 100%, hsl(258 94% 66% / 0.45), transparent 70%)",
           filter: "blur(40px)",
         }}
       />
 
       {/* Full-width name */}
-      <div className="relative select-none px-6 pt-20 sm:px-8">
+      <div className="relative min-w-0 select-none px-6 pt-16 sm:px-8 sm:pt-20">
         <motion.h2
           aria-hidden
-          className="whitespace-nowrap text-center font-display text-[clamp(3.4rem,13.5vw,13rem)] font-medium leading-none tracking-[-0.02em] text-[#f4efe6]"
+          className="mx-auto flex min-w-0 max-w-full flex-col items-center text-center font-display text-[clamp(3.35rem,18vw,5rem)] font-medium leading-[0.82] tracking-[-0.04em] text-[#f4efe6] sm:block sm:w-fit sm:whitespace-nowrap sm:text-[clamp(3.4rem,10.5vw,10rem)] sm:leading-none sm:tracking-[-0.035em]"
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
         >
-          {"JAHID".split("").map((ch, i) => (
-            <span
-              key={i}
-              className="inline-block transition-all duration-500 hover:-translate-y-2 hover:text-[hsl(43_90%_62%)]"
-            >
-              {ch}
-            </span>
-          ))}
-          <span className="mx-[0.12em] inline-block text-[hsl(43_90%_62%)]">
+          <span className="block whitespace-nowrap sm:inline">
+            {"JAHID".split("").map((ch, i) => (
+              <span
+                key={i}
+                className="inline-block transition-all duration-500 hover:-translate-y-2 hover:text-[hsl(258_94%_84%)]"
+              >
+                {ch}
+              </span>
+            ))}
+          </span>
+          <span className="mx-[0.12em] hidden text-[hsl(258_94%_84%)] sm:inline-block">
             •
           </span>
-          <span className="italic text-[hsl(43_90%_62%)]">
+          <span className="block whitespace-nowrap italic text-[hsl(258_94%_84%)] sm:inline">
             {"HASAN".split("").map((ch, i) => (
               <span
                 key={i}
-                className="inline-block transition-all duration-500 hover:-translate-y-2 hover:text-[hsl(43_90%_62%)]"
+                className="inline-block transition-all duration-500 hover:-translate-y-2 hover:text-[hsl(258_94%_84%)]"
               >
                 {ch}
               </span>
@@ -364,8 +320,7 @@ function LumeFooter() {
         <div className="mt-16 grid gap-12 border-t border-white/[0.06] pt-14 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
             <p className="max-w-sm text-sm leading-relaxed text-[#a89e8e]">
-              Full-stack engineering and project delivery from technical
-              planning through launch — clear, maintainable, and accountable.
+              Interactive web developer specializing in React, Next.js, and GSAP animation — full-stack delivery from planning through launch. Based in Dhaka, Bangladesh, available worldwide.
             </p>
             <ul className="mt-8 flex flex-wrap gap-3">
               <FooterLink href="mailto:jahid.bubtcse29@gmail.com">
@@ -407,7 +362,7 @@ function LumeFooter() {
             </p>
             <Link
               href="/contact"
-              className="group mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[hsl(43_90%_62%)] transition-colors hover:text-[#ffe9b8]"
+              className="group mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[hsl(258_94%_84%)] transition-colors hover:text-[#E0D5FE]"
             >
               Start a project
               <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -415,7 +370,7 @@ function LumeFooter() {
           </div>
         </div>
 
-        <div className="mt-14 flex flex-col gap-3 border-t border-white/[0.06] pt-6 text-[10px] uppercase tracking-[0.18em] text-[#6f675c] sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-14 flex flex-col gap-3 border-t border-white/[0.06] pt-6 text-[10px] uppercase tracking-[0.18em] text-[#938a7d] sm:flex-row sm:items-center sm:justify-between">
           <span>© {new Date().getFullYear()} Jahid Hasan</span>
           <span>Full-stack development / project delivery</span>
           <span>Dhaka, Bangladesh</span>
@@ -439,7 +394,7 @@ function FooterLink({
         href={href}
         target={external ? "_blank" : undefined}
         rel={external ? "noreferrer" : undefined}
-        className="group inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-[#a89e8e] transition-colors hover:border-[hsl(43_90%_58%_/_0.45)] hover:text-[#f4efe6]"
+        className="group inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-[#a89e8e] transition-colors hover:border-[hsl(258_94%_76%_/_0.45)] hover:text-[#f4efe6]"
       >
         {children}
         <ArrowUpRight className="size-3.5 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />

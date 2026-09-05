@@ -2,6 +2,7 @@ import { createAnonClient } from "@/lib/supabase/server";
 import SkillsClient from "@/components/pages/SkillsClient";
 import { SkillsPage as DimensionSkills } from "@/themes/dimension/DimensionPages";
 import { SkillsPage as LumeSkills } from "@/themes/lume/LumePages";
+import { SkillsPage as SolaceSkills } from "@/themes/solace/SolacePages";
 import { getActiveTheme } from "@/lib/theme";
 import { Metadata } from "next";
 import { getMetadata, getPageSchema } from "@/lib/seo";
@@ -26,7 +27,7 @@ export default async function SkillsPage() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
         />
       )}
-      {theme === "dimension" ? <DimensionSkills skills={skills ?? []} /> : theme === "lume" ? <LumeSkills skills={skills ?? []} /> : <SkillsClient skills={skills ?? []} />}
+      {theme === "dimension" ? <DimensionSkills skills={skills ?? []} /> : theme === "lume" ? <LumeSkills skills={skills ?? []} /> : theme === "solace" ? <SolaceSkills skills={skills ?? []} /> : <SkillsClient skills={skills ?? []} />}
     </>
   );
 }

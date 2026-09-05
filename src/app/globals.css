@@ -1,5 +1,107 @@
-@import url("https://fonts.googleapis.com/css2?family=Cormorant:wght@400;500;600;700&family=Fira+Code:wght@300;400;500&family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cormorant:wght@400;500;600;700&family=Fira+Code:wght@300;400;500&family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Montserrat:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@300..700&display=swap");
 @import "tailwindcss";
+
+.leaflet-container {
+  background: #e8ece6;
+  font-family: inherit;
+}
+
+.leaflet-control-zoom a {
+  display: grid;
+  min-width: 44px;
+  min-height: 44px;
+  place-items: center;
+}
+
+.leaflet-control-attribution {
+  font-size: 10px;
+}
+
+.leaflet-tooltip.mirpur-area-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border: 1px solid rgb(107 29 115 / 25%);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 92%);
+  box-shadow: 0 4px 16px rgb(15 23 42 / 14%);
+  color: #6b1d73;
+  font-weight: 800;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.leaflet-tooltip.mirpur-area-label span {
+  font-size: 14px;
+}
+
+.leaflet-tooltip.mirpur-area-label small {
+  color: #475569;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.map-poi-div-icon {
+  background: transparent;
+  border: 0;
+}
+
+.map-poi-icon {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 3px solid #fff;
+  border-radius: 12px 12px 12px 3px;
+  background: var(--poi-color);
+  box-shadow: 0 5px 14px rgb(15 23 42 / 28%);
+  color: #fff;
+  transform: rotate(-45deg);
+}
+
+.map-poi-icon svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+  transform: rotate(45deg);
+}
+
+.leaflet-tooltip.map-poi-label {
+  border: 0;
+  border-radius: 6px;
+  background: rgb(255 255 255 / 94%);
+  box-shadow: 0 3px 10px rgb(15 23 42 / 15%);
+  color: #172033;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.map-legend-icon {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+  place-items: center;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.map-legend-icon svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.25;
+}
+
+.map-legend-metro { background: #1746b0; }
+.map-legend-hospital { background: #c62d2d; }
+.map-legend-school { background: #6b1d73; }
 
 /* Digital Dimension is isolated under its own shell; the original theme remains unchanged. */
 .dimension-theme {
@@ -8075,15 +8177,11 @@ textarea:focus {
 .lume-theme .font-body {
   font-family: Montserrat, system-ui, sans-serif;
 }
-.lume-theme.lume-cursor-active,
-.lume-theme.lume-cursor-active * {
-  cursor: none !important;
-}
 .lume-theme em {
   font-style: italic;
 }
 .lume-theme ::selection {
-  background: hsl(43 90% 58% / 0.35);
+  background: hsl(258 94% 76% / 0.35);
   color: #fff;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -8128,14 +8226,14 @@ textarea:focus {
   margin: 0 0 1.4rem;
 }
 .lume-prose a {
-  color: hsl(43 90% 62%);
+  color: hsl(258 94% 84%);
   text-decoration: underline;
   text-underline-offset: 3px;
-  text-decoration-color: hsl(43 90% 58% / 0.4);
+  text-decoration-color: hsl(258 94% 76% / 0.4);
   transition: text-decoration-color 0.2s;
 }
 .lume-prose a:hover {
-  text-decoration-color: hsl(43 90% 62%);
+  text-decoration-color: hsl(258 94% 84%);
 }
 .lume-prose ul,
 .lume-prose ol {
@@ -8146,15 +8244,15 @@ textarea:focus {
   margin: 0.45rem 0;
 }
 .lume-prose ul li::marker {
-  color: hsl(43 70% 50%);
+  color: hsl(255 84% 66%);
 }
 .lume-prose ol li::marker {
-  color: hsl(43 70% 50%);
+  color: hsl(255 84% 66%);
 }
 .lume-prose blockquote {
   margin: 2.4rem 0;
   padding: 0.25rem 0 0.25rem 1.6rem;
-  border-left: 2px solid hsl(43 90% 58% / 0.6);
+  border-left: 2px solid hsl(258 94% 76% / 0.6);
   font-family: Cormorant, Georgia, serif;
   font-size: 1.35rem;
   font-style: italic;
@@ -8196,7 +8294,7 @@ textarea:focus {
   background: linear-gradient(
     90deg,
     transparent,
-    hsl(43 90% 58% / 0.4),
+    hsl(258 94% 76% / 0.4),
     transparent
   );
   margin: 2.8rem 0;
@@ -8220,4 +8318,316 @@ textarea:focus {
 .lume-prose th {
   color: #f4efe6;
   background: rgba(255, 255, 255, 0.03);
+}
+
+/* ==================================================================
+   Solace — refreshing minimal editorial light theme (isolated shell)
+   ================================================================== */
+.solace-theme {
+  --sol-paper: #faf9f4;
+  --sol-surface: #ffffff;
+  --sol-sand: #f2efe6;
+  --sol-ink: #1c1b17;
+  --sol-muted: #6e695d;
+  --sol-faint: #a39c8c;
+  --sol-line: rgba(28, 27, 23, 0.09);
+  --sol-accent: #0e6e54;
+  --sol-accent-deep: #0a5340;
+  --sol-tint: #e7f1eb;
+
+  min-height: 100dvh;
+  background: var(--sol-paper);
+  color: var(--sol-ink);
+  font-family: "Instrument Sans", system-ui, sans-serif;
+  position: fixed;
+  inset: 0;
+  overflow: auto;
+  z-index: 100;
+}
+.solace-theme * {
+  box-sizing: border-box;
+}
+.solace-theme a {
+  text-decoration: none;
+  color: inherit;
+}
+.solace-theme main {
+  min-height: 100vh;
+}
+.solace-theme .font-display {
+  font-family: Fraunces, Georgia, serif;
+  font-optical-sizing: auto;
+}
+.solace-theme .font-body {
+  font-family: "Instrument Sans", system-ui, sans-serif;
+}
+.solace-theme .font-mono-label {
+  font-family: "JetBrains Mono", monospace;
+}
+.solace-theme em {
+  font-style: normal;
+  color: var(--sol-accent);
+}
+.solace-theme ::selection {
+  background: rgba(14, 110, 84, 0.18);
+  color: var(--sol-ink);
+}
+
+/* Outlined display text for marquee strips */
+.solace-outline {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--sol-faint);
+}
+
+/* Rotating availability stamp */
+.solace-stamp {
+  animation: solace-spin 22s linear infinite;
+}
+@keyframes solace-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Marquee */
+.solace-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: solace-marquee var(--marquee-duration, 36s) linear infinite;
+}
+.solace-marquee-track[data-reverse="true"] {
+  animation-direction: reverse;
+}
+.solace-marquee:hover .solace-marquee-track {
+  animation-play-state: paused;
+}
+@keyframes solace-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Soft ambient blobs (very light, paper-friendly) */
+.solace-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(80px);
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+/* Underline link sweep */
+.solace-link {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.solace-link:hover {
+  background-size: 100% 1px;
+}
+
+/* Article reading progress rail */
+.solace-readrail span {
+  transform-origin: top;
+  background: var(--sol-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .solace-theme *,
+  .solace-theme *::before,
+  .solace-theme *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Solace article prose — rendered HTML from the dashboard. */
+.solace-prose {
+  color: #3d3a33;
+  font-size: 1.05rem;
+  line-height: 1.85;
+}
+.solace-prose > *:first-child {
+  margin-top: 0;
+}
+.solace-prose > *:last-child {
+  margin-bottom: 0;
+}
+.solace-prose h2 {
+  font-family: Fraunces, Georgia, serif;
+  font-size: clamp(1.9rem, 4vw, 2.5rem);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  color: var(--sol-ink);
+  margin: 3rem 0 1.2rem;
+}
+.solace-prose h3 {
+  font-family: Fraunces, Georgia, serif;
+  font-size: 1.45rem;
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--sol-ink);
+  margin: 2.4rem 0 1rem;
+}
+.solace-prose p {
+  margin: 0 0 1.4rem;
+}
+.solace-prose a {
+  color: var(--sol-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(14, 110, 84, 0.35);
+  transition: text-decoration-color 0.2s;
+}
+.solace-prose a:hover {
+  text-decoration-color: var(--sol-accent);
+}
+.solace-prose ul,
+.solace-prose ol {
+  margin: 0 0 1.4rem;
+  padding-left: 1.4rem;
+}
+.solace-prose li {
+  margin: 0.45rem 0;
+}
+.solace-prose ul li::marker {
+  color: var(--sol-accent);
+}
+.solace-prose ol li::marker {
+  color: var(--sol-accent);
+}
+.solace-prose blockquote {
+  margin: 2.4rem 0;
+  padding: 0.25rem 0 0.25rem 1.6rem;
+  border-left: 2px solid var(--sol-accent);
+  font-family: Fraunces, Georgia, serif;
+  font-size: 1.3rem;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--sol-ink);
+}
+.solace-prose img {
+  width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  border: 1px solid var(--sol-line);
+  margin: 1.5rem 0;
+}
+.solace-prose code {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.88em;
+  background: var(--sol-sand);
+  border: 1px solid var(--sol-line);
+  border-radius: 6px;
+  padding: 0.15rem 0.4rem;
+  color: var(--sol-ink);
+}
+.solace-prose pre {
+  background: #201f1b;
+  border: 1px solid var(--sol-line);
+  border-radius: 1rem;
+  padding: 1.4rem;
+  overflow-x: auto;
+  margin: 1.6rem 0;
+}
+.solace-prose pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: #ece9df;
+}
+.solace-prose hr {
+  border: 0;
+  height: 1px;
+  background: var(--sol-line);
+  margin: 2.8rem 0;
+}
+.solace-prose strong {
+  color: var(--sol-ink);
+  font-weight: 600;
+}
+.solace-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.6rem 0;
+  font-size: 0.95rem;
+}
+.solace-prose th,
+.solace-prose td {
+  border: 1px solid var(--sol-line);
+  padding: 0.7rem 1rem;
+  text-align: left;
+}
+.solace-prose th {
+  color: var(--sol-ink);
+  background: var(--sol-sand);
+}
+
+/* ---- Solace v2: editorial print-system additions ---- */
+.solace-theme .font-grotesk {
+  font-family: "Space Grotesk", system-ui, sans-serif;
+}
+
+/* Graph-paper vertical hairlines */
+.solace-gridlines {
+  background-image: linear-gradient(
+    90deg,
+    var(--sol-line) 1px,
+    transparent 1px
+  );
+  background-size: calc(100% / 6) 100%;
+}
+.solace-gridlines-12 {
+  background-image: linear-gradient(
+    90deg,
+    var(--sol-line) 1px,
+    transparent 1px
+  );
+  background-size: calc(100% / 12) 100%;
+}
+
+/* Vertical rail navigation */
+.solace-vlink {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+/* Drop cap for article body */
+.solace-prose > p:first-of-type::first-letter {
+  font-family: Fraunces, Georgia, serif;
+  float: left;
+  font-size: 3.6em;
+  line-height: 0.78;
+  padding-right: 0.09em;
+  padding-top: 0.05em;
+  color: var(--sol-accent);
+  font-weight: 500;
+}
+
+/* Giant fill link (footer CTA) */
+.solace-filllink {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  line-height: 1.05;
+}
+.solace-filllink .solace-fill-inner {
+  display: block;
+  transition: transform 0.55s cubic-bezier(0.76, 0, 0.24, 1);
+}
+.solace-filllink .solace-fill-dup {
+  position: absolute;
+  inset: 0;
+  transform: translateY(105%);
+  transition: transform 0.55s cubic-bezier(0.76, 0, 0.24, 1);
+  color: #7fc7ac;
+}
+.solace-filllink:hover .solace-fill-inner {
+  transform: translateY(-105%);
+}
+.solace-filllink:hover .solace-fill-dup {
+  transform: translateY(0);
 }

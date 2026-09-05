@@ -1,12 +1,12 @@
 "use client";
 import { Blog } from "@/lib/types";
 import Link from "next/link";
-import Image from "next/image";
 import SafeImage from "@/components/ui/SafeImage";
 import { format } from "date-fns";
-import { CalendarIcon, TagIcon, MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { CalendarIcon, MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useState, useMemo } from "react";
 import parse from 'html-react-parser'
+import { blogImageSrc } from "@/lib/content-seo";
 
 interface Props { blogs: Blog[] }
 
@@ -61,6 +61,7 @@ export default function BlogsClient({ blogs }: Props) {
           <div className="relative group">
             <MagnifyingGlassIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--vsc-text-dim)] group-focus-within:text-[var(--vsc-accent)] transition-colors" />
             <input
+              aria-label="Search articles"
               type="text"
               placeholder="Search articles, tags..."
               value={searchQuery}
@@ -69,6 +70,8 @@ export default function BlogsClient({ blogs }: Props) {
             />
             {searchQuery && (
               <button
+                type="button"
+                aria-label="Clear article search"
                 onClick={() => setSearchQuery("")}
                 className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-white/10 rounded-full transition-colors"
               >
@@ -127,9 +130,10 @@ export default function BlogsClient({ blogs }: Props) {
               {blog.cover_image && (
                 <div className="w-full md:w-56 lg:w-80 aspect-video md:aspect-square lg:aspect-video rounded-xl overflow-hidden flex-shrink-0 border border-white/5 relative">
                   <SafeImage
-                    src={blog.cover_image}
+                    src={blogImageSrc(blog.cover_image)}
                     alt={blog.title}
                     fill
+                    sizes="(max-width: 767px) 95vw, (max-width: 1023px) 224px, 320px"
                     className="object-cover transition-transform duration-1000 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[var(--vsc-bg)]/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

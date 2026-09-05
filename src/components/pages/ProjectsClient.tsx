@@ -3,6 +3,7 @@ import { Project } from "@/lib/types";
 import { PhotoIcon, GlobeAltIcon, XMarkIcon, BuildingOffice2Icon, CodeBracketIcon, UserGroupIcon, BriefcaseIcon, SparklesIcon } from "@heroicons/react/24/outline";
 import SafeImage from "@/components/ui/SafeImage";
 import { useState, useMemo } from "react";
+import { projectDescription, projectImageAlt, projectRole } from "@/lib/content-seo";
 
 interface Props { projects: Project[] }
 type ProjectType = Project["project_type"];
@@ -51,7 +52,7 @@ export default function ProjectsClient({ projects }: Props) {
         <div className="flex-1 max-w-3xl">
           <h1 className="text-4xl md:text-6xl font-extrabold text-[var(--vsc-text-bright)] mb-4 tracking-tighter">
             <span className="text-[var(--vsc-keyword)] font-mono text-3xl md:text-4xl">export</span>
-            {" "}Client Delivery
+            {" "}Interactive web development projects
           </h1>
           <p className="text-[var(--vsc-text-dim)] text-base md:text-lg max-w-2xl opacity-90 leading-relaxed font-sans">
             A clear split between company-led client work from my role at {companyName} and independent builds I create personally.
@@ -205,7 +206,7 @@ export default function ProjectsClient({ projects }: Props) {
               {project.cover_image ? (
                 <SafeImage
                   src={project.cover_image}
-                  alt={project.title}
+                  alt={projectImageAlt(project)}
                   fill
                   sizes="(min-width: 1536px) 30vw, (min-width: 1024px) 45vw, 90vw"
                   className="object-cover transition-transform duration-1000 group-hover:scale-110"
@@ -245,8 +246,9 @@ export default function ProjectsClient({ projects }: Props) {
                 {project.title}
               </h3>
               <p className="text-sm text-[var(--vsc-text-dim)] leading-relaxed mb-6 flex-1 opacity-80 group-hover:opacity-100 transition-opacity">
-                {project.description}
+                {projectDescription(project)}
               </p>
+              {projectRole(project) && <p className="mt-2 text-xs text-[var(--vsc-accent)]">{projectRole(project)}</p>}
 
               <div className="flex flex-wrap gap-2 mb-6">
                 {(project.tech_stack ?? []).map(tech => (

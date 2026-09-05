@@ -2,6 +2,7 @@ import { createAnonClient } from "@/lib/supabase/server";
 import ProjectsClient from "@/components/pages/ProjectsClient";
 import { ProjectsPage as DimensionProjects } from "@/themes/dimension/DimensionPages";
 import { ProjectsPage as LumeProjects } from "@/themes/lume/LumePages";
+import { ProjectsPage as SolaceProjects } from "@/themes/solace/SolacePages";
 import { getActiveTheme } from "@/lib/theme";
 import { Metadata } from "next";
 import { getMetadata, getPageSchema } from "@/lib/seo";
@@ -26,7 +27,7 @@ export default async function ProjectsPage() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
         />
       )}
-      {theme === "dimension" ? <DimensionProjects projects={projects ?? []} /> : theme === "lume" ? <LumeProjects projects={projects ?? []} /> : <ProjectsClient projects={projects ?? []} />}
+      {theme === "dimension" ? <DimensionProjects projects={projects ?? []} /> : theme === "lume" ? <LumeProjects projects={projects ?? []} /> : theme === "solace" ? <SolaceProjects projects={projects ?? []} /> : <ProjectsClient projects={projects ?? []} />}
     </>
   );
 }

@@ -50,8 +50,16 @@ CREATE TABLE IF NOT EXISTS blogs (
   content TEXT DEFAULT '',
   cover_image TEXT DEFAULT '',
   tags TEXT[] DEFAULT '{}',
+  category TEXT DEFAULT 'Technical',
   published BOOLEAN DEFAULT false,
   views INTEGER DEFAULT 0,
+  meta_title TEXT DEFAULT '',
+  meta_description TEXT DEFAULT '',
+  og_title TEXT DEFAULT '',
+  og_description TEXT DEFAULT '',
+  og_image TEXT DEFAULT '',
+  canonical_url TEXT DEFAULT '',
+  schema_data JSONB,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -98,6 +106,15 @@ CREATE TABLE IF NOT EXISTS site_settings (
 );
 INSERT INTO site_settings (key, value) VALUES ('frontend_theme', 'vscode') ON CONFLICT (key) DO NOTHING;
 
+CREATE TABLE IF NOT EXISTS page_meta (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  page_slug TEXT NOT NULL UNIQUE,
+  meta_title TEXT DEFAULT '', meta_description TEXT DEFAULT '',
+  og_title TEXT DEFAULT '', og_description TEXT DEFAULT '', og_image TEXT DEFAULT '',
+  canonical_url TEXT DEFAULT '', schema_data JSONB,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- Policies
 ALTER TABLE profile ENABLE ROW LEVEL SECURITY;
 ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
@@ -106,6 +123,7 @@ ALTER TABLE skills ENABLE ROW LEVEL SECURITY;
 ALTER TABLE contact_messages ENABLE ROW LEVEL SECURITY;
 ALTER TABLE about ENABLE ROW LEVEL SECURITY;
 ALTER TABLE site_settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE page_meta ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Public read all" ON profile FOR SELECT USING (true);
 CREATE POLICY "Public read all" ON projects FOR SELECT USING (true);
@@ -113,6 +131,8 @@ CREATE POLICY "Public read all" ON blogs FOR SELECT USING (true);
 CREATE POLICY "Public read all" ON skills FOR SELECT USING (true);
 CREATE POLICY "Public read all" ON about FOR SELECT USING (true);
 CREATE POLICY "Public read site settings" ON site_settings FOR SELECT USING (true);
+CREATE POLICY "Public read page meta" ON page_meta FOR SELECT USING (true);
+CREATE POLICY "Dashboard update page meta" ON page_meta FOR UPDATE USING (true) WITH CHECK (true);
 CREATE POLICY "Anyone can insert messages" ON contact_messages FOR INSERT WITH CHECK (true);
 
 -- Allow Dashboard access (Simplified for demo, usually use auth.uid())

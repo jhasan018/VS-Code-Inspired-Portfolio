@@ -15,7 +15,7 @@ export default function HomeClient({ profile, about }: Props) {
   // Dynamically generate code lines based on profile data
   const codeLines = useMemo(() => {
     const name = profile?.name ?? "Jahid Hasan";
-    const role = profile?.title ?? "Full Stack Web Developer";
+    const role = profile?.title ?? "Interactive Web Developer";
     const location = profile?.location ?? "Bangladesh 🇧🇩";
 
     return [
@@ -74,8 +74,8 @@ export default function HomeClient({ profile, about }: Props) {
           </div>
 
           <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-[var(--vsc-text-bright)] leading-[1.1] mb-6 tracking-tighter">
-            Building <span className="bg-gradient-to-br from-[var(--vsc-accent)] to-[var(--vsc-green)] bg-clip-text text-transparent">Digital</span><br />
-            Experiences.
+            Interactive websites<br />
+            <span className="bg-gradient-to-br from-[var(--vsc-accent)] to-[var(--vsc-green)] bg-clip-text text-transparent">that move.</span>
           </h1>
 
           <div className="text-lg md:text-xl lg:text-2xl text-[var(--vsc-text)] font-mono mb-8 flex flex-wrap items-center justify-start gap-2 sm:gap-3">
@@ -86,7 +86,7 @@ export default function HomeClient({ profile, about }: Props) {
           </div>
 
           <p className="text-[var(--vsc-text-dim)] text-sm sm:text-base md:text-lg max-w-[600px] leading-relaxed mb-10 font-sans mx-auto lg:mx-0 px-0 lg:px-0">
-            {profile?.bio ?? "A passionate Full Stack Developer crafting seamless, high-performance web applications with modern architectures and stunning user interfaces."}
+            I design and develop animated, fast, and scalable web experiences using React, Next.js, and GSAP — from first line of code to production launch.
           </p>
 
           <div className="flex flex-wrap gap-4 justify-start">

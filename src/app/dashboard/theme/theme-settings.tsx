@@ -7,6 +7,7 @@ const themes = [
   { id: "vscode" as const, name: "VS Code", description: "Your original developer workspace theme.", colors: ["#37353e", "#715a5a", "#d3dad9"] },
   { id: "dimension" as const, name: "Digital Dimension", description: "Immersive molten 3D portfolio experience.", colors: ["#08090c", "#ff5a1f", "#f2f1ed"] },
   { id: "lume" as const, name: "Lume", description: "Editorial luxury glass theme with molten gold light.", colors: ["#0c0a08", "#d8b25c", "#f4efe6"] },
+  { id: "solace" as const, name: "Solace", description: "Refreshing minimal editorial light theme with rich serif typography.", colors: ["#faf9f4", "#0e6e54", "#1c1b17"] },
 ];
 
 export default function ThemeSettings({ initialTheme }: { initialTheme: FrontendTheme }) {

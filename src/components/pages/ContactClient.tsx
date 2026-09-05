@@ -6,6 +6,7 @@ import { z } from "zod";
 import toast from "react-hot-toast";
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import { Profile } from "@/lib/types";
+import OpenStreetMap from "@/components/ui/OpenStreetMap";
 
 const schema = z.object({
   name: z.string().min(2, "Name is too short"),
@@ -55,17 +56,17 @@ export default function ContactClient({ profile }: Props) {
         <div className="flex flex-col gap-5">
           <div className="vsc-card p-6 border border-[var(--vsc-border)] rounded-xl bg-white/[0.02]">
             <div className="text-3xl mb-4">📬</div>
-            <div className="text-xs text-[var(--vsc-text-dim)] font-mono mb-1">// email</div>
+            <div className="text-xs text-[var(--vsc-text-dim)] font-mono mb-1">{"// email"}</div>
             <div className="text-[var(--vsc-accent)] font-semibold break-all">{profile?.email || "jahid.bubtcse29@gmail.com"}</div>
           </div>
           <div className="vsc-card p-6 border border-[var(--vsc-border)] rounded-xl bg-white/[0.02]">
             <div className="text-3xl mb-4">📍</div>
-            <div className="text-xs text-[var(--vsc-text-dim)] font-mono mb-1">// location</div>
+            <div className="text-xs text-[var(--vsc-text-dim)] font-mono mb-1">{"// location"}</div>
             <div className="text-[var(--vsc-green)] font-semibold">{profile?.location || "Dhaka, Bangladesh 🇧🇩"}</div>
           </div>
           <div className="vsc-card p-6 border border-[var(--vsc-border)] rounded-xl bg-white/[0.02]">
             <div className="text-3xl mb-4">{profile?.available_for_work ? "🟢" : "🔴"}</div>
-            <div className="text-xs text-[var(--vsc-text-dim)] font-mono mb-1">// status</div>
+            <div className="text-xs text-[var(--vsc-text-dim)] font-mono mb-1">{"// status"}</div>
             <div className={`font-semibold ${profile?.available_for_work ? 'text-[var(--vsc-green)]' : 'text-red-400'}`}>
               {profile?.available_for_work ? "Available for exciting projects" : "Currently busy with projects"}
             </div>
@@ -105,6 +106,7 @@ export default function ContactClient({ profile }: Props) {
           </button>
         </form>
       </div>
+      <OpenStreetMap />
     </div>
   );
 }

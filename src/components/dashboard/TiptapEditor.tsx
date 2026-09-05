@@ -79,12 +79,21 @@ export default function TiptapEditor({ content, onChange }: Props) {
   const addImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    const alt = window.prompt(
+      "Describe what this image communicates for someone who cannot see it:",
+    )?.trim();
+    if (!alt) {
+      toast.error("Image alt text is required");
+      e.target.value = "";
+      return;
+    }
     
     const loadingToast = toast.loading("Uploading image...");
     try {
       const url = await uploadImage(file);
       if (url) {
-        editor?.chain().focus().setImage({ src: url }).run();
+        editor?.chain().focus().setImage({ src: url, alt }).run();
         toast.success("Image added!", { id: loadingToast });
       }
     } catch (error) {

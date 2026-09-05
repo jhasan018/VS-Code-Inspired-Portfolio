@@ -43,7 +43,7 @@ export default function LumeContactForm() {
             required
             minLength={2}
             placeholder="Full name"
-            className="w-full rounded-xl border border-white/[0.08] bg-[#0c0a08] px-4 py-3 text-sm text-[#f4efe6] outline-none transition-colors placeholder:text-[#6f675c] focus:border-[hsl(43_90%_58%_/_0.5)]"
+            className="w-full rounded-xl border border-white/[0.08] bg-[#0c0a08] px-4 py-3 text-sm text-[#f4efe6] outline-none transition-colors placeholder:text-[#6f675c] focus:border-[hsl(258_94%_76%_/_0.5)]"
           />
         </label>
 
@@ -56,7 +56,7 @@ export default function LumeContactForm() {
             type="email"
             required
             placeholder="you@company.com"
-            className="w-full rounded-xl border border-white/[0.08] bg-[#0c0a08] px-4 py-3 text-sm text-[#f4efe6] outline-none transition-colors placeholder:text-[#6f675c] focus:border-[hsl(43_90%_58%_/_0.5)]"
+            className="w-full rounded-xl border border-white/[0.08] bg-[#0c0a08] px-4 py-3 text-sm text-[#f4efe6] outline-none transition-colors placeholder:text-[#6f675c] focus:border-[hsl(258_94%_76%_/_0.5)]"
           />
         </label>
       </div>
@@ -70,7 +70,7 @@ export default function LumeContactForm() {
           required
           minLength={2}
           placeholder="What should we build?"
-          className="w-full rounded-xl border border-white/[0.08] bg-[#0c0a08] px-4 py-3 text-sm text-[#f4efe6] outline-none transition-colors placeholder:text-[#6f675c] focus:border-[hsl(43_90%_58%_/_0.5)]"
+          className="w-full rounded-xl border border-white/[0.08] bg-[#0c0a08] px-4 py-3 text-sm text-[#f4efe6] outline-none transition-colors placeholder:text-[#6f675c] focus:border-[hsl(258_94%_76%_/_0.5)]"
         />
       </label>
 
@@ -84,7 +84,7 @@ export default function LumeContactForm() {
           minLength={10}
           rows={5}
           placeholder="Context, outcome, and any constraints that matter."
-          className="w-full resize-none rounded-xl border border-white/[0.08] bg-[#0c0a08] px-4 py-3 text-sm leading-relaxed text-[#f4efe6] outline-none transition-colors placeholder:text-[#6f675c] focus:border-[hsl(43_90%_58%_/_0.5)]"
+          className="w-full resize-none rounded-xl border border-white/[0.08] bg-[#0c0a08] px-4 py-3 text-sm leading-relaxed text-[#f4efe6] outline-none transition-colors placeholder:text-[#6f675c] focus:border-[hsl(258_94%_76%_/_0.5)]"
         />
       </label>
 
@@ -93,8 +93,8 @@ export default function LumeContactForm() {
         disabled={sending}
         className="group relative inline-flex w-fit items-center gap-2.5 overflow-hidden rounded-full px-7 py-3.5 text-sm font-semibold text-[#0b0907] transition-transform duration-300 hover:scale-[1.03] disabled:cursor-not-allowed disabled:opacity-60"
       >
-        <span className="absolute inset-0 bg-[linear-gradient(135deg,#f6dfa0,#d4ac52_55%,#b8892f)]" />
-        <span className="absolute inset-0 translate-y-full bg-[linear-gradient(135deg,#ffe9b8,#e0bd6b)] transition-transform duration-300 group-hover:translate-y-0" />
+        <span className="absolute inset-0 bg-[linear-gradient(135deg,#E0D5FE,#A78BFA_55%,#7c3aed)]" />
+        <span className="absolute inset-0 translate-y-full bg-[linear-gradient(135deg,#E0D5FE,#e0bd6b)] transition-transform duration-300 group-hover:translate-y-0" />
         <span className="relative z-10 inline-flex items-center gap-2.5">
           {sending ? "Transmitting…" : "Send Message"}
           <ArrowUpRight className="size-4" />

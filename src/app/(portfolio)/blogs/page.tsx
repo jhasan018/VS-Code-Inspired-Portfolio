@@ -2,6 +2,7 @@ import { createAnonClient } from "@/lib/supabase/server";
 import BlogsClient from "@/components/pages/BlogsClient";
 import { BlogsPage as DimensionBlogs } from "@/themes/dimension/DimensionPages";
 import { BlogsPage as LumeBlogs } from "@/themes/lume/LumePages";
+import { BlogsPage as SolaceBlogs } from "@/themes/solace/SolacePages";
 import { getActiveTheme } from "@/lib/theme";
 import { Metadata } from "next";
 import { getMetadata, getPageSchema } from "@/lib/seo";
@@ -26,7 +27,7 @@ export default async function BlogsPage() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
         />
       )}
-      {theme === "dimension" ? <DimensionBlogs blogs={blogs ?? []} /> : theme === "lume" ? <LumeBlogs blogs={blogs ?? []} /> : <BlogsClient blogs={blogs ?? []} />}
+      {theme === "dimension" ? <DimensionBlogs blogs={blogs ?? []} /> : theme === "lume" ? <LumeBlogs blogs={blogs ?? []} /> : theme === "solace" ? <SolaceBlogs blogs={blogs ?? []} /> : <BlogsClient blogs={blogs ?? []} />}
     </>
   );
 }

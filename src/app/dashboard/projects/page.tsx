@@ -9,7 +9,8 @@ import slugify from "slug";
 const empty: Partial<Project> = {
   title: "", slug: "", description: "", long_description: "",
   tech_stack: [], github_url: "", live_url: "", featured: false,
-  project_type: "company", status: "completed", order_index: 0, cover_image: ""
+  project_type: "company", status: "completed", order_index: 0, cover_image: "",
+  image_alt: "", role_label: "", seo_description: ""
 };
 
 type SortOption = "title-asc" | "title-desc" | "date-newest" | "date-oldest" | "order" | "status";
@@ -287,6 +288,22 @@ export default function ProjectsDashboard() {
                 <div>
                   <label className={labelClass}>short description</label>
                   <textarea className={`${inputClass} h-20 resize-none`} value={editing.description} onChange={e => setEditing({...editing, description: e.target.value})} />
+                </div>
+
+                <div>
+                  <label className={labelClass}>SEO / technology description</label>
+                  <textarea className={`${inputClass} h-20 resize-none`} placeholder="One sentence describing the stack and interactivity delivered" value={editing.seo_description || ""} onChange={e => setEditing({...editing, seo_description: e.target.value})} />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className={labelClass}>Image alt text</label>
+                    <input className={inputClass} placeholder="Describe the project screenshot" value={editing.image_alt || ""} onChange={e => setEditing({...editing, image_alt: e.target.value})} />
+                  </div>
+                  <div>
+                    <label className={labelClass}>Role / agency attribution</label>
+                    <input className={inputClass} placeholder="Web Developer · Dcastalia Limited" value={editing.role_label || ""} onChange={e => setEditing({...editing, role_label: e.target.value})} />
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

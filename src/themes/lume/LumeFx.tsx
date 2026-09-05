@@ -56,10 +56,10 @@ export function Reveal({
 /* ------------------------------------------------------------------ */
 
 const AURORA_ORBS = [
-  { x: "12%", y: "18%", size: 620, hue: 42, blur: 90, opacity: 0.5 },
-  { x: "68%", y: "6%", size: 520, hue: 8, blur: 110, opacity: 0.34 },
-  { x: "42%", y: "72%", size: 680, hue: 82, blur: 120, opacity: 0.3 },
-  { x: "86%", y: "58%", size: 440, hue: 26, blur: 100, opacity: 0.4 },
+  { x: "12%", y: "18%", size: 620, hue: 258, blur: 90, opacity: 0.5 },
+  { x: "68%", y: "6%", size: 520, hue: 230, blur: 110, opacity: 0.34 },
+  { x: "42%", y: "72%", size: 680, hue: 245, blur: 120, opacity: 0.3 },
+  { x: "86%", y: "58%", size: 440, hue: 210, blur: 100, opacity: 0.4 },
 ];
 
 export function Aurora({
@@ -139,7 +139,7 @@ export function Lamp({
           className="h-[280px] w-[820px] rounded-[50%]"
           style={{
             background:
-              "radial-gradient(ellipse 60% 50% at 50% 100%, hsl(43 100% 58% / 0.5), transparent 70%)",
+              "radial-gradient(ellipse 60% 50% at 50% 100%, hsl(258 94% 76% / 0.5), transparent 70%)",
             filter: "blur(28px)",
             transformOrigin: "center bottom",
           }}

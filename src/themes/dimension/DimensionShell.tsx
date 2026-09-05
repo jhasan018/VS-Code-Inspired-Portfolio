@@ -192,7 +192,8 @@ export default function DimensionShell({
             <div className="dimension-footer-portrait">
               <Image
                   src="/jahid-footer-mark.png"
-                  fill
+                  width={600}
+                  height={750}
                   sizes="(max-width: 650px) 120px, 150px"
                   alt=""
               />

@@ -3,6 +3,10 @@ import parse from "html-react-parser";
 import { format } from "date-fns";
 import { ArrowLeft, ArrowUpRight, Clock3 } from "lucide-react";
 import type { Blog } from "@/lib/types";
+import Image from "next/image";
+import BlogContent from "@/components/ui/BlogContent";
+import LinkedInProfileBadge from "@/components/ui/LinkedInProfileBadge";
+import { blogImageSrc } from "@/lib/content-seo";
 
 function readingTime(content: string) {
   const words = content
@@ -59,9 +63,12 @@ export default function DimensionArticle({ blog }: { blog: Blog }) {
 
         {blog.cover_image && (
             <figure className="dimension-article-cover">
-              <img
-                  src={blog.cover_image}
+              <Image
+                  src={blogImageSrc(blog.cover_image)}
                   alt={cleanTitle}
+                  width={1200}
+                  height={675}
+                  sizes="(max-width: 1280px) 100vw, 1200px"
               />
 
               <figcaption>
@@ -74,10 +81,11 @@ export default function DimensionArticle({ blog }: { blog: Blog }) {
           {!!blog.tags?.length && (
               <div
                   className="dimension-article-tags"
+                  role="list"
                   aria-label="Article tags"
               >
                 {blog.tags.map((tag) => (
-                    <span key={tag}>
+                    <span key={tag} role="listitem">
                                 {tag}
                             </span>
                 ))}
@@ -85,9 +93,14 @@ export default function DimensionArticle({ blog }: { blog: Blog }) {
           )}
 
           <div className="dimension-article-prose">
-            {parse(blog.content || "")}
+            <BlogContent html={blog.content || ""} articleTitle={cleanTitle} />
           </div>
         </div>
+
+        <LinkedInProfileBadge
+          className="mx-auto max-w-[880px] border-t border-white/10 px-6 py-16 sm:px-8"
+          headingClassName="text-2xl font-semibold text-white"
+        />
 
         <footer className="dimension-article-footer">
           <div>
